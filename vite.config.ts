@@ -21,7 +21,7 @@ export default defineConfig({
       },
     },
     watch: {
-      ignored: ["**/database.json"],
+      ignored: ["**/*.db"],
     },
   },
 });

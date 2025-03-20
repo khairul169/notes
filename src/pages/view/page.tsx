@@ -5,7 +5,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@/hooks/useQuery";
 import db from "@/lib/db";
 import { getTags, getTitle } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { AppbarActions, AppbarButton } from "@/components/widgets/appbar";
@@ -19,11 +19,16 @@ import {
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Note } from "@shared/schema";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default function ViewNotePage() {
   const ref = useRef<MarkdownEditorRef>(null!);
+  const curVersion = useRef(new Date(0));
   const { id } = useParams();
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const lastUpdate = useLiveQuery(
+    () => db.notes.get(id!).then((i) => i?.updatedAt),
+    [id]
+  );
 
   const { data, loading, error, refetch } = useQuery(async () => {
     const data = await db.notes.get(id!);
@@ -31,29 +36,37 @@ export default function ViewNotePage() {
       throw new Error("Note not found");
     }
 
+    curVersion.current = data.updatedAt;
     ref.current?.setMarkdown(data.content);
     setTimeout(
       () => ref.current.focus(undefined, { defaultSelection: "rootEnd" }),
       100
     );
-    setLastUpdate(data.updatedAt);
-
     return data;
   }, [id]);
+
+  useEffect(() => {
+    if (lastUpdate && curVersion.current < lastUpdate) {
+      curVersion.current = lastUpdate;
+      refetch();
+    }
+  }, [lastUpdate, refetch]);
 
   const onChange = useDebounce((content: string) => {
     if (!data) {
       return;
     }
 
-    setLastUpdate(new Date());
+    const updatedAt = new Date();
+    curVersion.current = updatedAt;
+
     db.notes.update(id!, {
       title: getTitle(content) || "Untitled",
       content,
       tags: getTags(content),
-      updatedAt: new Date(),
+      updatedAt,
     });
-  }, 200);
+  }, 500);
 
   if (loading) {
     return (
