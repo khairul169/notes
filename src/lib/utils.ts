@@ -13,7 +13,7 @@ export function getTitle(content: string) {
 }
 
 export function getTags(content: string) {
-  const regex = /\B\#[a-zA-Z0-9_]+\b/g;
+  const regex = /\B#[a-zA-Z0-9_]+\b/g;
   const tags = content.match(regex);
   return tags ? tags.map((tag) => tag.slice(1)) : [];
 }

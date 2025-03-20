@@ -16,10 +16,8 @@ export default function HomePage() {
     <div className="p-4">
       <h2 className="text-2xl">Notes</h2>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {data?.map((note) => (
-          <NoteCard key={note.id} data={note} />
-        ))}
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+        {data?.map((note) => <NoteCard key={note.id} data={note} />)}
       </div>
     </div>
   );

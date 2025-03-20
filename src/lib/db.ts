@@ -3,7 +3,7 @@ import FullTextSearch from "./fts";
 
 export type KeyVal = {
   key: string;
-  value: any;
+  value: unknown;
 };
 
 export type Note = {

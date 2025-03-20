@@ -62,7 +62,7 @@ const RippleButton = ({
     >
       <div
         className={cn(
-          "relative z-10 flex items-center gap-2 w-full",
+          "relative z-10 flex w-full items-center gap-2",
           wrapperClassName
         )}
       >
@@ -73,7 +73,7 @@ const RippleButton = ({
         {buttonRipples.map((ripple) => (
           <span
             className={cn(
-              "absolute animate-rippling duration-500 rounded-full bg-white/50",
+              "animate-rippling absolute rounded-full bg-white/50 duration-500",
               rippleClassName
             )}
             key={ripple.key}

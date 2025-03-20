@@ -22,7 +22,7 @@ export default function Appbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex items-center bg-surface-container-low md:bg-surface-container-high overflow-hidden h-12 md:rounded-full md:pl-4",
+        "bg-surface-container-low md:bg-surface-container-high flex h-12 items-center overflow-hidden md:rounded-full md:pl-4",
         className
       )}
     >
@@ -34,7 +34,7 @@ export default function Appbar({ className }: { className?: string }) {
       </AppbarButton>
 
       <MdSearch
-        className="hidden md:block mr-2 pointer-events-none opacity-50 peer-focus-visible:opacity-80 transition-opacity"
+        className="pointer-events-none mr-2 hidden opacity-50 transition-opacity peer-focus-visible:opacity-80 md:block"
         size={24}
       />
 
@@ -52,7 +52,7 @@ export function AppbarButton({
   return (
     <Button
       className={cn(
-        "rounded-none h-full w-14 text-on-surface focus-visible:ring-0",
+        "text-on-surface h-full w-14 rounded-none focus-visible:ring-0",
         className
       )}
       variant="ghost"
@@ -96,7 +96,7 @@ const SearchBar = () => {
   return (
     <Input
       placeholder="Search..."
-      className="flex-1 focus-visible:ring-0 dark:bg-transparent border-0 h-12 pl-0 pr-0"
+      className="h-12 flex-1 border-0 pr-0 pl-0 focus-visible:ring-0 dark:bg-transparent"
       defaultValue={query || ""}
       onChange={(e) => onChange(e.target.value)}
     />

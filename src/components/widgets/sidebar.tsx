@@ -23,7 +23,7 @@ export default function Sidebar() {
     <>
       {open && (
         <div
-          className="fixed md:hidden inset-0 z-[19] bg-black/10 cursor-pointer"
+          className="fixed inset-0 z-[19] cursor-pointer bg-black/10 md:hidden"
           role="button"
           onClick={() => sidebarStore.setState({ open: false })}
         />
@@ -31,7 +31,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          "bg-background w-[80%] md:max-w-[250px] flex flex-col fixed top-0 bottom-0 left-0 z-20 rounded-r-2xl overflow-hidden -translate-x-full transition-all md:rounded-none md:static md:translate-0",
+          "bg-background fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none",
           open && "flex -translate-x-0"
         )}
       >
@@ -64,7 +64,7 @@ const NewNoteButton = () => {
 
   return (
     <Button
-      className="w-full h-12 justify-start"
+      className="h-12 w-full justify-start"
       variant="filled"
       onClick={onPress}
     >
@@ -85,10 +85,8 @@ const NoteList = () => {
   );
 
   return (
-    <div className="flex-1 overflow-y-auto flex flex-col">
-      {notes?.map((note) => (
-        <NoteItem key={note.id} data={note} />
-      ))}
+    <div className="flex flex-1 flex-col overflow-y-auto">
+      {notes?.map((note) => <NoteItem key={note.id} data={note} />)}
     </div>
   );
 };
@@ -96,7 +94,7 @@ const NoteList = () => {
 const NoteItem = ({ data }: { data: Note }) => (
   <RippleButton
     href={`/note/${data.id}`}
-    className="py-2.5 px-4 w-full transition-colors hover:bg-surface-container"
+    className="hover:bg-surface-container w-full px-4 py-2.5 transition-colors"
   >
     <MdOutlineInsertDriveFile className="shrink-0" />
     <span className="truncate">{data.title}</span>

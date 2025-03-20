@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import RippleButton from "./ripple-button";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-error/20 dark:aria-invalid:ring-error/40 aria-invalid:border-error",
+  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-error/20 dark:aria-invalid:ring-error/40 aria-invalid:border-error inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -12,11 +12,11 @@ const buttonVariants = cva(
           "bg-surface-container-low text-primary shadow-xs hover:shadow-sm",
         filled: "bg-primary text-on-primary hover:shadow-xs",
         error: "bg-error text-on-error hover:shadow-xs",
-        ghost: "bg-transparent text-primary",
+        ghost: "text-primary bg-transparent",
       },
       size: {
         default: "h-10 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 gap-1.5 px-3 has-[>svg]:px-2.5 text-xs",
+        sm: "h-8 gap-1.5 px-3 text-xs has-[>svg]:px-2.5",
         lg: "h-12 px-6 has-[>svg]:px-4",
         icon: "size-10",
       },

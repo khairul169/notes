@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export function useQuery<T>(
   asyncFn: () => Promise<T>,
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -14,6 +14,7 @@ export function useQuery<T>(
       .then((res) => setData(res))
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
   useEffect(() => {

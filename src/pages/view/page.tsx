@@ -56,8 +56,8 @@ export default function ViewNotePage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="animate-spin size-10" />
+      <div className="flex flex-1 items-center justify-center">
+        <Loader2 className="size-10 animate-spin" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function ViewNotePage() {
     <>
       <Actions data={data} refetch={refetch} />
 
-      <div className="p-4 h-screen flex flex-col">
+      <div className="flex h-screen flex-col p-4">
         <DeletedAlert data={data} refetch={refetch} />
 
         <MarkdownEditor

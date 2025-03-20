@@ -1,10 +1,10 @@
-// @ts-expect-error
+// @ts-expect-error no types
 import FlexSearch from "flexsearch";
 import Dexie from "dexie";
 
 export default class FullTextSearch<
   TKeys extends string = string,
-  DB extends Dexie = Dexie
+  DB extends Dexie = Dexie,
 > {
   indexes: Record<TKeys, FlexSearch.Index> = {} as never;
 
@@ -40,7 +40,7 @@ export default class FullTextSearch<
   async setupTable(name: TKeys, key: string, columns: string | string[]) {
     const table = this.db.table(name as never);
 
-    const getData = (item: any) => {
+    const getData = (item: Record<string, unknown>) => {
       return Array.isArray(columns)
         ? columns.map((col) => item[col]).join(" ")
         : item[columns];

@@ -6,7 +6,7 @@ export default function NoteCard({ data }: { data: Note }) {
   return (
     <RippleButton
       href={`/note/${data.id}`}
-      className="py-2.5 px-4 items-start w-full transition-colors bg-surface-container-high hover:bg-surface-container-highest rounded-lg"
+      className="bg-surface-container-high hover:bg-surface-container-highest w-full items-start rounded-lg px-4 py-2.5 transition-colors"
       wrapperClassName="flex-col items-stretch h-full"
     >
       <div className="flex items-center gap-2 text-lg">
@@ -17,14 +17,14 @@ export default function NoteCard({ data }: { data: Note }) {
       {data.tags?.length > 0 && (
         <div className="flex items-center gap-1 text-xs">
           {data.tags.map((tag) => (
-            <span className="px-2 rounded-lg border border-surface-outline">
+            <span className="border-surface-outline rounded-lg border px-2">
               {tag}
             </span>
           ))}
         </div>
       )}
 
-      <div className="text-sm max-h-[100px] overflow-hidden flex-1">
+      <div className="max-h-[100px] flex-1 overflow-hidden text-sm">
         {data.content
           .split("\n")
           .slice(1)
@@ -33,7 +33,7 @@ export default function NoteCard({ data }: { data: Note }) {
           ))}
       </div>
 
-      <p className="text-xs text-on-surface/60 truncate text-right">
+      <p className="text-on-surface/60 truncate text-right text-xs">
         {data.updatedAt.toLocaleString()}
       </p>
     </RippleButton>

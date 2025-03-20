@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "pretty": "prettier -w .",
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "@mdxeditor/editor": "^3.28.0",
@@ -41,6 +43,10 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"
@@ -50,6 +56,12 @@
       "@swc/core",
       "es5-ext",
       "esbuild"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,html,json}": [
+      "prettier --write",
+      "eslint --fix"
     ]
   }
 }
