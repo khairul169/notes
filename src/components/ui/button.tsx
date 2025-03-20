@@ -10,7 +10,8 @@ const buttonVariants = cva(
       variant: {
         elevated:
           "bg-surface-container-low text-primary shadow-xs hover:shadow-sm",
-        filled: "bg-primary text-on-primary hover:shadow-xs",
+        filled:
+          "bg-primary text-on-primary hover:bg-primary/90 hover:shadow-xs",
         error: "bg-error text-on-error hover:shadow-xs",
         ghost: "text-primary bg-transparent",
       },

@@ -50,7 +50,7 @@ export default function MarkdownEditor({
       {...props}
       plugins={[...defaultPlugins, ...plugins]}
       className={cn(
-        "[&_.mdxeditor-root-contenteditable]:h-full [&_.mdxeditor-root-contenteditable_>_div]:h-full",
+        // "overflow-hidden [&_.mdxeditor-root-contenteditable]:h-full [&_.mdxeditor-root-contenteditable_>_div]:h-full",
         className
       )}
       contentEditableClassName={cn(

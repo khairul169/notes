@@ -39,7 +39,7 @@ export default function ViewNotePage() {
     curVersion.current = data.updatedAt;
     ref.current?.setMarkdown(data.content);
     setTimeout(
-      () => ref.current.focus(undefined, { defaultSelection: "rootEnd" }),
+      () => ref.current.focus(undefined, { defaultSelection: "rootStart" }),
       100
     );
     return data;
@@ -88,17 +88,17 @@ export default function ViewNotePage() {
     <>
       <Actions data={data} refetch={refetch} />
 
-      <div className="flex h-screen flex-col p-4">
+      <div className="flex flex-1 flex-col overflow-hidden p-4">
         <DeletedAlert data={data} refetch={refetch} />
-
         <MarkdownEditor
           ref={ref}
           markdown={data?.content || ""}
-          className="flex-1"
-          contentEditableClassName="h-full"
+          className="scrollable flex-1 overflow-y-auto"
+          // contentEditableClassName="h-full"
           onChange={onChange}
         />
-        <p className="text-xs">
+
+        <p className="mt-2 text-xs">
           Last Update: {lastUpdate?.toLocaleString() || "-"}
         </p>
       </div>

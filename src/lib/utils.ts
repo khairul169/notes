@@ -6,10 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getTitle(content: string) {
-  let line = content.split("\n")[0].trim();
+  let line = content.split("\n")[0];
   // remove any markdown syntax, like header, bold, etc
   line = line.replace(/[*#_]/g, "");
-  return line;
+  return line.trim();
 }
 
 export function getTags(content: string) {

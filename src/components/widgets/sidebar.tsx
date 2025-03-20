@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router";
 import { createStore, useStore } from "zustand";
 import { useEffect } from "react";
 import { Note } from "@shared/schema";
+import icon from "@/assets/favicon.svg";
 
 export const sidebarStore = createStore(() => ({ open: false }));
 
@@ -37,9 +38,17 @@ export default function Sidebar() {
         )}
       >
         <div className="p-4">
+          <RippleButton href="/" className="mb-4 flex h-12 items-center">
+            <img src={icon} alt="Notes" className="size-8" />
+            <p className="ml-2 text-2xl">Notes</p>
+          </RippleButton>
+
           <NewNoteButton />
         </div>
 
+        <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">
+          Last Updated
+        </p>
         <NoteList />
       </aside>
     </>
@@ -50,6 +59,10 @@ const NewNoteButton = () => {
   const navigate = useNavigate();
 
   const onPress = () => {
+    if (!window.confirm("Are you sure you want to create a new note?")) {
+      return;
+    }
+
     const content = "# New Note";
     const data: Note = {
       id: uuid.v7(),
@@ -64,11 +77,7 @@ const NewNoteButton = () => {
   };
 
   return (
-    <Button
-      className="h-12 w-full justify-start"
-      variant="filled"
-      onClick={onPress}
-    >
+    <Button className="h-12" variant="filled" onClick={onPress}>
       <MdAdd />
       New Note
     </Button>
@@ -81,7 +90,7 @@ const NoteList = () => {
       .orderBy("updatedAt")
       .reverse()
       .filter((i) => !i.deletedAt)
-      .limit(20)
+      .limit(5)
       .toArray()
   );
 

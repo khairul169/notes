@@ -16,8 +16,11 @@ export default function NoteCard({ data }: { data: Note }) {
 
       {data.tags?.length > 0 && (
         <div className="flex items-center gap-1 text-xs">
-          {data.tags.map((tag) => (
-            <span className="border-surface-outline rounded-lg border px-2">
+          {data.tags.map((tag, idx) => (
+            <span
+              key={tag + idx}
+              className="border-surface-outline rounded-lg border px-2"
+            >
               {tag}
             </span>
           ))}

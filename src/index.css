@@ -6,6 +6,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  font-display: swap;
+  src: url("/src/assets/fonts/Roboto.ttf");
+}
+
 :root {
   --md-sys-color-primary: rgb(65 95 145);
   --md-sys-color-surface-tint: rgb(65 95 145);
@@ -111,6 +119,8 @@
 }
 
 @theme inline {
+  --font-sans: "Roboto", sans-serif;
+
   --color-primary: var(--md-sys-color-primary);
   --color-surface-tint: var(--md-sys-color-surface-tint);
   --color-on-primary: var(--md-sys-color-on-primary);
@@ -191,5 +201,32 @@
   }
   body {
     @apply bg-background text-on-background;
+    --sb-color: rgb(43, 65, 102);
+    --sb-bg: var(--md-sys-color-background);
+    --sb-size: 7px;
+  }
+
+  body::-webkit-scrollbar,
+  .scrollable::-webkit-scrollbar {
+    width: var(--sb-size);
+  }
+
+  body::-webkit-scrollbar-track,
+  .scrollable::-webkit-scrollbar-track {
+    background: var(--sb-bg);
+    border-radius: 10px;
+  }
+
+  body::-webkit-scrollbar-thumb,
+  .scrollable::-webkit-scrollbar-thumb {
+    background: var(--sb-color);
+    border-radius: 10px;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    body,
+    .scrollable {
+      scrollbar-color: var(--sb-color) var(--sb-bg);
+    }
   }
 }

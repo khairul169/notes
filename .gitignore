@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 *.db
+.env*
+!.env.example
