@@ -3,7 +3,7 @@ import MarkdownEditor, {
 } from "@/components/ui/markdown-editor";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@/hooks/useQuery";
-import db, { Note } from "@/lib/db";
+import db from "@/lib/db";
 import { getTags, getTitle } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { useParams } from "react-router";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Note } from "@shared/schema";
 
 export default function ViewNotePage() {
   const ref = useRef<MarkdownEditorRef>(null!);

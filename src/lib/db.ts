@@ -1,19 +1,10 @@
 import Dexie, { type EntityTable } from "dexie";
 import FullTextSearch from "./fts";
+import { Note } from "@shared/schema";
 
 export type KeyVal = {
   key: string;
   value: unknown;
-};
-
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date | null;
 };
 
 type Tables = {

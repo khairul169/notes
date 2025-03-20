@@ -1,5 +1,5 @@
 import RippleButton from "@/components/ui/ripple-button";
-import { Note } from "@/lib/db";
+import { Note } from "@shared/schema";
 import { MdOutlineInsertDriveFile } from "react-icons/md";
 
 export default function NoteCard({ data }: { data: Note }) {

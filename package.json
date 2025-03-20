@@ -4,14 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:client": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "pretty": "prettier -w .",
+    "pretty": "prettier \"./**/*.{js,ts,tsx,html,json}\" --write",
+    "check": "tsc -b && npm run lint && npm run pretty",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:server": "bun run --watch server/main.ts",
+    "dev": "concurrently --names \"client,server\" \"npm:dev:client\" \"npm:dev:server\""
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
     "@mdxeditor/editor": "^3.28.0",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
@@ -21,6 +25,7 @@
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
     "flexsearch": "^0.8.105",
+    "hono": "^4.7.5",
     "lucide-react": "^0.483.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -30,15 +35,17 @@
     "tailwindcss": "^4.0.14",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
+    "zod": "^3.24.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^22.13.10",
+    "@types/bun": "^1.2.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react-swc": "^3.8.0",
+    "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",

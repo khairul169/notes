@@ -1,7 +1,8 @@
 import { useQuery } from "@/hooks/useQuery";
-import { fts, Note } from "@/lib/db";
+import { fts } from "@/lib/db";
 import { useSearchParams } from "react-router";
 import NoteCard from "../home/components/note-card";
+import { Note } from "@shared/schema";
 
 export default function SearchPage() {
   const [params] = useSearchParams();

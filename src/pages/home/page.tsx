@@ -1,9 +1,9 @@
-import { useQuery } from "@/hooks/useQuery";
 import db from "@/lib/db";
 import NoteCard from "./components/note-card";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default function HomePage() {
-  const { data } = useQuery(async () => {
+  const data = useLiveQuery(async () => {
     const res = await db.notes
       .orderBy("updatedAt")
       .reverse()

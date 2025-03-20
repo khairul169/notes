@@ -2,12 +2,13 @@ import { Button } from "../ui/button";
 import { MdAdd, MdOutlineInsertDriveFile } from "react-icons/md";
 import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
-import db, { Note } from "@/lib/db";
+import db from "@/lib/db";
 import * as uuid from "uuid";
 import { cn, getTitle } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router";
 import { createStore, useStore } from "zustand";
 import { useEffect } from "react";
+import { Note } from "@shared/schema";
 
 export const sidebarStore = createStore(() => ({ open: false }));
 
