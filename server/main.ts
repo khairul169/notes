@@ -16,4 +16,9 @@ if (import.meta.env.NODE_ENV === "production") {
 }
 
 export type APIType = typeof api;
-export default app;
+
+export default {
+  port: Number(process.env.PORT || 3000),
+  hostname: process.env.HOST || "127.0.0.1",
+  fetch: app.fetch,
+};
