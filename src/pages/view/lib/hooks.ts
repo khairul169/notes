@@ -43,7 +43,7 @@ export function useOnChange(
   }, 500);
 }
 
-export function useMdxPlugins(id?: string) {
+export function useMdxPlugins(id: string) {
   return useMemo(
     () => [
       // Editor Plugins

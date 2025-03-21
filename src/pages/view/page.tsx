@@ -26,7 +26,7 @@ export default function ViewNotePage() {
     version: curVersion,
   });
   const onChange = useOnChange(data, curVersion);
-  const plugins = useMdxPlugins();
+  const plugins = useMdxPlugins(id!);
 
   useEffect(() => {
     if (lastUpdate && curVersion.current < lastUpdate) {
