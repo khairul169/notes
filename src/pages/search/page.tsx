@@ -11,7 +11,7 @@ export default function SearchPage() {
 
   const { data } = useQuery(async () => {
     const res = await fts.searchAndGet<Note>("notes", query);
-    return res.filter((i) => !i.deletedAt);
+    return res.filter((i) => !i.deleted);
   }, [query]);
 
   return (

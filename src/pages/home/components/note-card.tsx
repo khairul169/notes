@@ -31,13 +31,15 @@ export default function NoteCard({ data }: { data: Note }) {
         </div>
       )}
 
-      <div className="max-h-[100px] overflow-hidden text-sm">
-        <Markdown>{data.content.split("\n").slice(1).join("\n")}</Markdown>
+      <div className="prose prose-sm dark:prose-invert max-h-[100px] overflow-hidden text-sm [&>*]:mb-0 [&>*]:text-sm">
+        <Markdown disallowedElements={["a"]}>
+          {data.content.split("\n").slice(1).join("\n")}
+        </Markdown>
       </div>
       <div className="flex-1" />
 
       <p className="text-on-surface/60 truncate text-right text-xs">
-        {data.updatedAt.toLocaleString()}
+        {new Date(data.updated).toLocaleString()}
       </p>
     </RippleButton>
   );

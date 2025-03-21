@@ -26,7 +26,7 @@ export default function ViewNotePage() {
   const curVersion = useRef(new Date(0));
   const { id } = useParams();
   const lastUpdate = useLiveQuery(
-    () => db.notes.get(id!).then((i) => i?.updatedAt),
+    () => db.notes.get(id!).then((i) => new Date(i?.updated || 0)),
     [id]
   );
 
@@ -36,7 +36,7 @@ export default function ViewNotePage() {
       throw new Error("Note not found");
     }
 
-    curVersion.current = data.updatedAt;
+    curVersion.current = new Date(data.updated);
     ref.current?.setMarkdown(data.content);
     setTimeout(
       () => ref.current.focus(undefined, { defaultSelection: "rootStart" }),
@@ -57,14 +57,14 @@ export default function ViewNotePage() {
       return;
     }
 
-    const updatedAt = new Date();
-    curVersion.current = updatedAt;
+    const now = Date.now();
+    curVersion.current = new Date(now);
 
     db.notes.update(id!, {
       title: getTitle(content) || "Untitled",
       content,
       tags: getTags(content),
-      updatedAt,
+      updated: now,
     });
   }, 500);
 
@@ -118,9 +118,10 @@ const Actions = ({
     }
 
     // Mark note as deleted
+    const now = Date.now();
     await db.notes.update(data.id, {
-      updatedAt: new Date(),
-      deletedAt: new Date(),
+      updated: now,
+      deleted: now,
     });
     refetch();
   };
@@ -151,11 +152,11 @@ const DeletedAlert = ({
   refetch: () => void;
 }) => {
   const onRestore = async () => {
-    await db.notes.update(data!.id, { updatedAt: new Date(), deletedAt: null });
+    await db.notes.update(data!.id, { updated: Date.now(), deleted: null });
     refetch();
   };
 
-  if (!data?.deletedAt) {
+  if (!data?.deleted) {
     return null;
   }
 

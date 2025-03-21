@@ -57,9 +57,9 @@ export default function Sidebar() {
 const NoteList = () => {
   const notes = useLiveQuery(() =>
     db.notes
-      .orderBy("updatedAt")
+      .orderBy("updated")
       .reverse()
-      .filter((i) => !i.deletedAt)
+      .filter((i) => !i.deleted)
       .limit(5)
       .toArray()
   );
@@ -95,7 +95,7 @@ const NoteItem = ({ data }: { data: Note }) => {
 const TagsList = () => {
   const tags = useLiveQuery(() =>
     db.notes
-      .filter((i) => !i.deletedAt)
+      .filter((i) => !i.deleted)
       .toArray()
       .then((i) => [...new Set(i.flatMap((i) => i.tags))])
   );

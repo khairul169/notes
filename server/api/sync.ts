@@ -1,16 +1,16 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import db from "../lib/db";
+import db, { inArray } from "../lib/db";
 
 export const getSyncQuery = z.object({
-  n: z.enum(["notes"]),
-  t: z.coerce.number().nullish(),
+  n: z.enum(["notes"]), // name
+  t: z.coerce.number().nullish(), // timestamp
 });
 
 export const syncableSchema = z.object({
   id: z.string(),
-  updatedAt: z.coerce.date(),
+  updated: z.number(),
 });
 
 export type Syncable = z.infer<typeof syncableSchema>;
@@ -26,34 +26,43 @@ const sync = new Hono()
     const query = c.req.valid("query");
     const name = query.n;
 
-    const timestamp = new Date(query.t || 0).toISOString();
     const data = db
-      .query(`SELECT * FROM ${name} WHERE updatedAt > $timestamp`)
-      .all({ $timestamp: timestamp })
+      .query(`SELECT * FROM ${name} WHERE updated > $timestamp`)
+      .all({ $timestamp: query.t || 0 })
       .map(db.parse) as Syncable[];
-    const last = db
-      .query(`SELECT updatedAt FROM ${name} ORDER BY updatedAt DESC LIMIT 1`)
-      .get() as Syncable;
 
-    return c.json({
-      name,
-      timestamp: new Date(last?.updatedAt),
-      data,
-    });
+    return c.json({ name, data });
   })
 
   //
   .post("/", zValidator("json", syncSchema), (c) => {
     const body = c.req.valid("json");
     const items = body.data as Syncable[];
+    const { name } = body;
+
+    // Validate items
+    syncableSchema.array().parse(items);
+
+    // Fetch existing items
+    const itemIds = items.map((i) => i.id);
+    const exists = db
+      .query(`SELECT id, updated FROM ${name} WHERE id ${inArray(itemIds)}`)
+      .all(...itemIds) as Syncable[];
 
     items.forEach((item) => {
-      const { success } = syncableSchema.safeParse(item);
-      if (!success) {
+      // Skip if timestamp is in the future
+      if (item.updated > Date.now()) {
         return;
       }
-      const data = item as z.infer<typeof syncableSchema>;
-      db.upsert(body.name, data);
+
+      // Skip if the item is older than the one in the database
+      const exist = exists.find((i) => i.id === item.id);
+      if (exist && exist.updated > item.updated) {
+        return;
+      }
+
+      // Insert or update item
+      db.upsert(body.name, item);
     });
 
     return c.json(true);

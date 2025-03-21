@@ -8,9 +8,9 @@ const schema = `
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     tags TEXT NOT NULL DEFAULT '[]',
-    createdAt TEXT NOT NULL,
-    updatedAt TEXT NOT NULL,
-    deletedAt TEXT
+    created INT NOT NULL,
+    updated INT NOT NULL,
+    deleted INT
   );
 `;
 
