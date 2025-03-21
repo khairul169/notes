@@ -94,7 +94,7 @@ export default function ViewNotePage() {
           ref={ref}
           markdown={data?.content || ""}
           className="scrollable flex-1 overflow-y-auto"
-          // contentEditableClassName="h-full"
+          contentEditableClassName="min-h-[50vh]"
           onChange={onChange}
         />
 
