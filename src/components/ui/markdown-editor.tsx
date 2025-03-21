@@ -14,6 +14,7 @@ import {
   markdownShortcutPlugin,
 } from "@mdxeditor/editor";
 import { cn } from "@/lib/utils";
+import { nord } from "cm6-theme-nord";
 
 export type MarkdownEditorProps = React.ComponentProps<typeof MDXEditor>;
 
@@ -35,6 +36,7 @@ const defaultPlugins = [
       sql: "SQL",
       json: "JSON",
     },
+    codeMirrorExtensions: [nord],
   }),
   markdownShortcutPlugin(),
 ];

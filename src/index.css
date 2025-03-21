@@ -230,3 +230,20 @@
     }
   }
 }
+
+.dark div[class*=codeMirrorWrapper] {
+  --basePageBg: var(--md-sys-color-surface-container);
+  --baseText: var(--md-sys-color-on-surface);
+
+  border: none;
+  padding: 0;
+  color: var(--md-sys-color-on-surface);
+  font-size: 14px;
+}
+.dark .cm-scroller {
+  padding: 8px 0px !important;
+}
+.dark div[class*=codeMirrorToolbar] {
+  background: none;
+  padding: 8px;
+}
