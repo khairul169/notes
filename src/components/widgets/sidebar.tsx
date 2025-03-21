@@ -4,7 +4,7 @@ import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
 import * as uuid from "uuid";
-import { cn, getTitle } from "@/lib/utils";
+import { cn, extractEmoji, getTitle } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router";
 import { createStore, useStore } from "zustand";
 import { useEffect } from "react";
@@ -33,7 +33,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          "bg-background fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none",
+          "bg-surface-container md:bg-background fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl shadow-md transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none md:shadow-none",
           open && "flex -translate-x-0"
         )}
       >
@@ -46,10 +46,10 @@ export default function Sidebar() {
           <NewNoteButton />
         </div>
 
-        <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">
-          Last Updated
-        </p>
-        <NoteList />
+        <div className="flex-1 gap-4 overflow-y-auto">
+          <NoteList />
+          <TagsList />
+        </div>
       </aside>
     </>
   );
@@ -63,7 +63,7 @@ const NewNoteButton = () => {
       return;
     }
 
-    const content = "# New Note";
+    const content = "# 📒 New Note";
     const data: Note = {
       id: uuid.v7(),
       title: getTitle(content),
@@ -93,20 +93,61 @@ const NoteList = () => {
       .limit(5)
       .toArray()
   );
+  if (!notes?.length) {
+    return null;
+  }
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto">
-      {notes?.map((note) => <NoteItem key={note.id} data={note} />)}
-    </div>
+    <>
+      <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">
+        Last Updated
+      </p>
+
+      <div>{notes?.map((note) => <NoteItem key={note.id} data={note} />)}</div>
+    </>
   );
 };
 
-const NoteItem = ({ data }: { data: Note }) => (
-  <RippleButton
-    href={`/note/${data.id}`}
-    className="hover:bg-surface-container w-full px-4 py-2.5 transition-colors"
-  >
-    <MdOutlineInsertDriveFile className="shrink-0" />
-    <span className="truncate">{data.title}</span>
-  </RippleButton>
-);
+const NoteItem = ({ data }: { data: Note }) => {
+  const icon = extractEmoji(data.title);
+
+  return (
+    <RippleButton
+      href={`/note/${data.id}`}
+      className="hover:bg-surface-container w-full px-4 py-3 transition-colors md:py-2.5"
+    >
+      {!icon && <MdOutlineInsertDriveFile className="shrink-0" />}
+      <span className="truncate">{data.title}</span>
+    </RippleButton>
+  );
+};
+
+const TagsList = () => {
+  const tags = useLiveQuery(() =>
+    db.notes
+      .filter((i) => !i.deletedAt)
+      .toArray()
+      .then((i) => [...new Set(i.flatMap((i) => i.tags))])
+  );
+  if (!tags?.length) {
+    return null;
+  }
+
+  return (
+    <>
+      <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">Tags</p>
+
+      <div className="flex flex-row flex-wrap gap-2 p-4 pt-2">
+        {tags?.map((tag) => (
+          <RippleButton
+            key={tag}
+            href={`/search?query=${encodeURIComponent("#" + tag)}`}
+            className="border-outline/60 hover:bg-surface-container-highest rounded-full border px-4 py-1 text-sm md:px-2 md:py-0.5"
+          >
+            {tag}
+          </RippleButton>
+        ))}
+      </div>
+    </>
+  );
+};

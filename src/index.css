@@ -231,6 +231,10 @@
   }
 }
 
+.mdxeditor li[role="checkbox"]::before, .mdxeditor li[role="checkbox"]::after {
+  margin-top: 7px;
+}
+
 .dark div[class*=codeMirrorWrapper] {
   --basePageBg: var(--md-sys-color-surface-container);
   --baseText: var(--md-sys-color-on-surface);

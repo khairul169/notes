@@ -88,7 +88,7 @@ export default function ViewNotePage() {
     <>
       <Actions data={data} refetch={refetch} />
 
-      <div className="flex flex-1 flex-col overflow-hidden p-4">
+      <div className="flex flex-1 flex-col overflow-hidden px-1 md:p-4">
         <DeletedAlert data={data} refetch={refetch} />
         <MarkdownEditor
           ref={ref}
@@ -97,10 +97,6 @@ export default function ViewNotePage() {
           contentEditableClassName="min-h-[50vh]"
           onChange={onChange}
         />
-
-        <p className="mt-2 text-xs">
-          Last Update: {lastUpdate?.toLocaleString() || "-"}
-        </p>
       </div>
     </>
   );
@@ -134,7 +130,7 @@ const Actions = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <AppbarButton>
-            <MdMoreVert className="size-5" />
+            <MdMoreVert className="size-6" />
           </AppbarButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" className="mr-4">

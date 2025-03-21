@@ -30,7 +30,7 @@ export default function Appbar({ className }: { className?: string }) {
         className="md:hidden"
         onClick={() => sidebarStore.setState({ open: true })}
       >
-        <MdMenu className="size-5" />
+        <MdMenu className="size-6" />
       </AppbarButton>
 
       <MdSearch
