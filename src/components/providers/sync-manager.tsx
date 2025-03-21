@@ -68,16 +68,17 @@ export default function SyncManager() {
           .where("updated")
           .above(lastSync)
           .toArray();
-        const serializedLocalData = localData.map(async (i) => {
-          return Promise.resolve(syncable[name].serialize?.(i) || i);
-        });
+        const serialized = await Promise.all(
+          localData.map(async (i) => {
+            return Promise.resolve(syncable[name].serialize?.(i) || i);
+          })
+        );
 
-        await api.sync.$post({
-          json: {
-            name: name as never,
-            data: await Promise.all(serializedLocalData),
-          },
-        });
+        if (serialized.length > 0) {
+          await api.sync.$post({
+            json: { name: name as never, data: serialized },
+          });
+        }
 
         // Update last sync
         await db._meta.put({ name, lastSync: now });
