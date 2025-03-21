@@ -1,15 +1,14 @@
-import { Button } from "../ui/button";
-import { MdAdd, MdOutlineInsertDriveFile } from "react-icons/md";
+import { MdOutlineInsertDriveFile } from "react-icons/md";
 import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
-import * as uuid from "uuid";
-import { cn, extractEmoji, getTitle } from "@/lib/utils";
-import { useLocation, useNavigate } from "react-router";
+import { cn, extractEmoji } from "@/lib/utils";
+import { useLocation } from "react-router";
 import { createStore, useStore } from "zustand";
 import { useEffect } from "react";
 import { Note } from "@shared/schema";
 import icon from "@/assets/favicon.svg";
+import NewNoteButton from "./new-note-btn";
 
 export const sidebarStore = createStore(() => ({ open: false }));
 
@@ -38,12 +37,12 @@ export default function Sidebar() {
         )}
       >
         <div className="p-4">
-          <RippleButton href="/" className="mb-4 flex h-12 items-center">
+          <RippleButton href="/" className="flex h-12 items-center">
             <img src={icon} alt="Notes" className="size-8" />
             <p className="ml-2 text-2xl">Notes</p>
           </RippleButton>
 
-          <NewNoteButton />
+          <NewNoteButton className="mt-4 hidden md:flex" />
         </div>
 
         <div className="flex-1 gap-4 overflow-y-auto">
@@ -54,35 +53,6 @@ export default function Sidebar() {
     </>
   );
 }
-
-const NewNoteButton = () => {
-  const navigate = useNavigate();
-
-  const onPress = () => {
-    if (!window.confirm("Are you sure you want to create a new note?")) {
-      return;
-    }
-
-    const content = "# 📒 New Note";
-    const data: Note = {
-      id: uuid.v7(),
-      title: getTitle(content),
-      content: content,
-      tags: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    db.notes.add(data);
-    navigate(`/note/${data.id}`);
-  };
-
-  return (
-    <Button className="h-12" variant="filled" onClick={onPress}>
-      <MdAdd />
-      New Note
-    </Button>
-  );
-};
 
 const NoteList = () => {
   const notes = useLiveQuery(() =>
