@@ -39,7 +39,7 @@ export default function SyncManager() {
   const syncRef = useRef(false);
 
   const onSync = useDebounce(async () => {
-    if (syncRef.current) return;
+    if (!navigator.onLine || syncRef.current) return;
 
     syncRef.current = true;
 
@@ -53,7 +53,12 @@ export default function SyncManager() {
 
         const remote = await api.sync
           .$get({ query: { n: name as never, t: lastSync.toString() } })
-          .then((i) => i.json());
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Failed to sync: " + res.statusText);
+            }
+            return res.json();
+          });
 
         // Apply changes from remote
         const remoteData = remote.data.map((i) => {
@@ -75,9 +80,12 @@ export default function SyncManager() {
         );
 
         if (serialized.length > 0) {
-          await api.sync.$post({
+          const res = await api.sync.$post({
             json: { name: name as never, data: serialized },
           });
+          if (!res.ok) {
+            throw new Error("Failed to sync: " + res.statusText);
+          }
         }
 
         // Update last sync
@@ -91,6 +99,8 @@ export default function SyncManager() {
   }, 300);
 
   const onUpdate = useCallback(async (name: string, data: unknown) => {
+    if (!navigator.onLine) return;
+
     const serialized = await Promise.resolve(
       syncable[name].serialize?.(data) || data
     );
