@@ -94,13 +94,11 @@ export default function SyncManager() {
       console.error(err);
     }
 
-    console.log("done");
     syncRef.current = false;
   }, 300);
 
   const onUpdate = useCallback(async (name: string, data: unknown) => {
     if (!navigator.onLine || syncRef.current) return;
-    console.log("update", name, syncRef.current);
 
     const serialized = await Promise.resolve(
       syncable[name].serialize?.(data) || data
