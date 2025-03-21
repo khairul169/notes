@@ -13,7 +13,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       manifest: {
         name: "Notes",
-        short_name: "notes",
+        short_name: "Notes",
         icons: [
           {
             src: "/android-chrome-192x192.png",
