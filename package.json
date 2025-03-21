@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "prepare": "husky",
     "dev:server": "bun run --watch server/main.ts",
-    "dev": "concurrently --names \"client,server\" \"npm:dev:client\" \"npm:dev:server\""
+    "dev": "concurrently --names \"client,server\" \"npm:dev:client\" \"npm:dev:server\"",
+    "start": "NODE_ENV=production bun run server/main.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
