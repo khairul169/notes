@@ -50,22 +50,6 @@ export default function SyncManager() {
           .first()
           .then((i) => i?.lastSync || 0);
 
-        const remote = await api.sync
-          .$get({ query: { n: name as never, t: lastSync.toString() } })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Failed to sync: " + res.statusText);
-            }
-            return res.json();
-          });
-
-        // Apply changes from remote
-        const remoteData = remote.data.map((i) => {
-          const parser = syncable[name].parse;
-          return parser ? parser(i) : i;
-        });
-        await db.table(name).bulkPut(remoteData);
-
         // Apply changes to remote
         const localData = await db
           .table(name)
@@ -87,6 +71,22 @@ export default function SyncManager() {
           }
         }
 
+        // Apply changes from remote
+        const remote = await api.sync
+          .$get({ query: { n: name as never, t: lastSync.toString() } })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Failed to sync: " + res.statusText);
+            }
+            return res.json();
+          });
+
+        const remoteData = remote.data.map((i) => {
+          const parser = syncable[name].parse;
+          return parser ? parser(i) : i;
+        });
+        await db.table(name).bulkPut(remoteData);
+
         // Update last sync
         await db._meta.put({ name, lastSync: remote.timestamp });
       }
@@ -94,11 +94,13 @@ export default function SyncManager() {
       console.error(err);
     }
 
+    console.log("done");
     syncRef.current = false;
   }, 300);
 
   const onUpdate = useCallback(async (name: string, data: unknown) => {
     if (!navigator.onLine || syncRef.current) return;
+    console.log("update", name, syncRef.current);
 
     const serialized = await Promise.resolve(
       syncable[name].serialize?.(data) || data
