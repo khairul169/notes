@@ -12,6 +12,16 @@ const schema = `
     updated INT NOT NULL,
     deleted INT
   );
+
+  CREATE TABLE IF NOT EXISTS attachments (
+    id TEXT PRIMARY KEY,
+    noteId TEXT NOT NULL,
+    type TEXT NOT NULL,
+    data TEXT NOT NULL,
+    created INT NOT NULL,
+    updated INT NOT NULL,
+    deleted INT
+  );
 `;
 
 export function initDb() {

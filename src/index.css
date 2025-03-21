@@ -201,7 +201,7 @@
   }
   body {
     @apply bg-background text-on-background;
-    --sb-color: rgb(43, 65, 102);
+    --sb-color: var(--md-sys-color-surface-bright);
     --sb-bg: var(--md-sys-color-background);
     --sb-size: 7px;
   }
@@ -233,6 +233,9 @@
 
 .mdxeditor li[role="checkbox"]::before, .mdxeditor li[role="checkbox"]::after {
   margin-top: 7px;
+}
+.mdxeditor img {
+  margin: 0;
 }
 
 .dark div[class*=codeMirrorWrapper] {

@@ -1,15 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDebounce } from "@/hooks/useDebounce";
 import api from "@/lib/api";
-import db from "@/lib/db";
+import db, { Attachment } from "@/lib/db";
 import { noteSchema } from "@shared/schema";
 import { IndexableType } from "dexie";
-// import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useEffect, useRef } from "react";
-import { z } from "zod";
+
+type Syncable = Record<
+  string,
+  Partial<{
+    parse: (i: any) => any;
+    serialize: (i: any) => any;
+  }>
+>;
 
 const syncInterval = 60000;
-const syncable: Record<string, z.ZodSchema> = {
-  notes: noteSchema,
+const syncable: Syncable = {
+  notes: {
+    parse: noteSchema.parse,
+  },
+  attachments: {
+    parse: (item: Attachment) => {
+      // decode data from base64 to blob
+      const data = new Blob([Buffer.from(item.data, "base64")], {
+        type: item.type,
+      });
+      return { ...item, data };
+    },
+    serialize: async (item: Attachment) => {
+      // encode data to base64
+      const data = Buffer.from(await item.data.arrayBuffer());
+      return { ...item, data: data.toString("base64") };
+    },
+  },
 };
 
 export default function SyncManager() {
@@ -33,7 +56,10 @@ export default function SyncManager() {
           .then((i) => i.json());
 
         // Apply changes from remote
-        const remoteData = remote.data.map((i) => syncable[name].parse(i));
+        const remoteData = remote.data.map((i) => {
+          const parser = syncable[name].parse;
+          return parser ? parser(i) : i;
+        });
         await db.table(name).bulkPut(remoteData);
 
         // Apply changes to remote
@@ -42,8 +68,15 @@ export default function SyncManager() {
           .where("updated")
           .above(lastSync)
           .toArray();
+        const serializedLocalData = localData.map(async (i) => {
+          return Promise.resolve(syncable[name].serialize?.(i) || i);
+        });
+
         await api.sync.$post({
-          json: { name: name as never, data: localData },
+          json: {
+            name: name as never,
+            data: await Promise.all(serializedLocalData),
+          },
         });
 
         // Update last sync
@@ -57,14 +90,16 @@ export default function SyncManager() {
   }, 300);
 
   const onUpdate = useCallback(async (name: string, data: unknown) => {
+    const serialized = await Promise.resolve(
+      syncable[name].serialize?.(data) || data
+    );
     await api.sync.$post({
-      json: { name: name as never, data: [data] },
+      json: { name: name as never, data: [serialized] },
     });
   }, []);
 
   useEffect(() => {
     const timer = setInterval(onSync, syncInterval);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const listeners: Record<string, any>[] = [];
 
     for (const name of Object.keys(syncable)) {

@@ -3,20 +3,22 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import db, { inArray } from "../lib/db";
 
-export const getSyncQuery = z.object({
-  n: z.enum(["notes"]), // name
+const syncable = ["notes", "attachments"] as const;
+
+const getSyncQuery = z.object({
+  n: z.enum(syncable), // name
   t: z.coerce.number().nullish(), // timestamp
 });
 
-export const syncableSchema = z.object({
+const syncableSchema = z.object({
   id: z.string(),
   updated: z.number(),
 });
 
-export type Syncable = z.infer<typeof syncableSchema>;
+type Syncable = z.infer<typeof syncableSchema>;
 
-export const syncSchema = z.object({
-  name: z.enum(["notes"]),
+const syncSchema = z.object({
+  name: z.enum(syncable),
   data: z.array(z.unknown()),
 });
 

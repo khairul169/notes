@@ -12,11 +12,23 @@ export type TableMeta = {
   lastSync: number;
 };
 
-type Tables = {
+export type Attachment = {
+  id: string;
+  noteId: string;
+  type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+  created: number;
+  updated: number;
+  deleted?: number | null;
+};
+
+export type Tables = {
   _data: EntityTable<KeyVal, "key">;
   _meta: EntityTable<TableMeta, "name">;
 
   notes: EntityTable<Note, "id">;
+  attachments: EntityTable<Attachment, "id">;
 };
 
 const db = new Dexie("db") as Dexie & Tables;
@@ -26,6 +38,7 @@ db.version(1).stores({
   _meta: "name",
 
   notes: "id, tags, created, updated, deleted",
+  attachments: "id, noteId, type, created, updated, deleted",
 });
 
 const fts = new FullTextSearch<keyof Tables>(db);
