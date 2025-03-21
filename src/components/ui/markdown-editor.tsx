@@ -23,7 +23,7 @@ export type MarkdownEditorRef = MDXEditorMethods;
 const defaultPlugins = [
   headingsPlugin(),
   listsPlugin(),
-  linkPlugin(),
+  linkPlugin({ disableAutoLink: true }),
   quotePlugin(),
   thematicBreakPlugin(),
   codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),

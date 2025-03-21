@@ -88,5 +88,7 @@ export default class FullTextSearch<
     table.hook("updating", (_mods, _key, item) => {
       this.add(name, item[key], getData(item));
     });
+
+    this.tables[name].isPrepared = true;
   }
 }

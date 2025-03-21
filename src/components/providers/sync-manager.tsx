@@ -49,7 +49,6 @@ export default function SyncManager() {
           .where({ name })
           .first()
           .then((i) => i?.lastSync || 0);
-        const now = Date.now();
 
         const remote = await api.sync
           .$get({ query: { n: name as never, t: lastSync.toString() } })
@@ -89,7 +88,7 @@ export default function SyncManager() {
         }
 
         // Update last sync
-        await db._meta.put({ name, lastSync: now });
+        await db._meta.put({ name, lastSync: remote.timestamp });
       }
     } catch (err) {
       console.error(err);
@@ -99,7 +98,7 @@ export default function SyncManager() {
   }, 300);
 
   const onUpdate = useCallback(async (name: string, data: unknown) => {
-    if (!navigator.onLine) return;
+    if (!navigator.onLine || syncRef.current) return;
 
     const serialized = await Promise.resolve(
       syncable[name].serialize?.(data) || data

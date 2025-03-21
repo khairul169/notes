@@ -4,9 +4,10 @@ import MarkdownEditor, {
 import db from "@/lib/db";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/loader";
 import { Note } from "@shared/schema";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useMdxPlugins, useNoteQuery, useOnChange } from "./lib/hooks";
@@ -36,11 +37,7 @@ export default function ViewNotePage() {
   }, [lastUpdate, refetch]);
 
   if (loading) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <Loader2 className="size-10 animate-spin" />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {

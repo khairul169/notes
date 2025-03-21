@@ -1,9 +1,9 @@
-import { MdOutlineInsertDriveFile } from "react-icons/md";
+import { MdOutlineInsertDriveFile, MdTag } from "react-icons/md";
 import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
 import db from "@/lib/db";
 import { cn, extractEmoji } from "@/lib/utils";
-import { useLocation } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import { createStore, useStore } from "zustand";
 import { useEffect } from "react";
 import { Note } from "@shared/schema";
@@ -15,10 +15,11 @@ export const sidebarStore = createStore(() => ({ open: false }));
 export default function Sidebar() {
   const open = useStore(sidebarStore, (state) => state.open);
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     sidebarStore.setState({ open: false });
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   return (
     <>
@@ -107,13 +108,15 @@ const TagsList = () => {
     <>
       <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">Tags</p>
 
-      <div className="flex flex-row flex-wrap gap-2 p-4 pt-2">
+      <div className="-ml-2 flex flex-row flex-wrap items-center gap-1 p-4 pt-2">
         {tags?.map((tag) => (
           <RippleButton
             key={tag}
             href={`/search?query=${encodeURIComponent("#" + tag)}`}
-            className="border-outline/60 hover:bg-surface-container-highest rounded-full border px-4 py-1 text-sm md:px-2 md:py-0.5"
+            className="hover:bg-surface-container-highest rounded-md px-2 py-1 text-sm"
+            wrapperClassName="gap-1"
           >
+            <MdTag className="text-on-surface/60" />
             {tag}
           </RippleButton>
         ))}

@@ -10,7 +10,8 @@ const schema = `
     tags TEXT NOT NULL DEFAULT '[]',
     created INT NOT NULL,
     updated INT NOT NULL,
-    deleted INT
+    deleted INT,
+    timestamp INT NOT NULL
   );
 
   CREATE TABLE IF NOT EXISTS attachments (
@@ -20,7 +21,8 @@ const schema = `
     data TEXT NOT NULL,
     created INT NOT NULL,
     updated INT NOT NULL,
-    deleted INT
+    deleted INT,
+    timestamp INT NOT NULL
   );
 `;
 

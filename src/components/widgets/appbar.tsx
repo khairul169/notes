@@ -28,7 +28,9 @@ export default function Appbar({ className }: { className?: string }) {
     >
       <AppbarButton
         className="md:hidden"
-        onClick={() => sidebarStore.setState({ open: true })}
+        onClick={() =>
+          setTimeout(() => sidebarStore.setState({ open: true }), 100)
+        }
       >
         <MdMenu className="size-6" />
       </AppbarButton>

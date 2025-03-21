@@ -29,11 +29,11 @@ const sync = new Hono()
     const name = query.n;
 
     const data = db
-      .query(`SELECT * FROM ${name} WHERE updated > $timestamp`)
+      .query(`SELECT * FROM ${name} WHERE "timestamp" > $timestamp`)
       .all({ $timestamp: query.t || 0 })
       .map(db.parse) as Syncable[];
 
-    return c.json({ name, data });
+    return c.json({ name, data, timestamp: Date.now() });
   })
 
   //
@@ -50,10 +50,11 @@ const sync = new Hono()
     const exists = db
       .query(`SELECT id, updated FROM ${name} WHERE id ${inArray(itemIds)}`)
       .all(...itemIds) as Syncable[];
+    const now = Date.now();
 
     items.forEach((item) => {
       // Skip if timestamp is in the future
-      if (item.updated > Date.now()) {
+      if (item.updated > now) {
         return;
       }
 
@@ -64,7 +65,7 @@ const sync = new Hono()
       }
 
       // Insert or update item
-      db.upsert(body.name, item);
+      db.upsert(body.name, { ...item, timestamp: now });
     });
 
     return c.json(true);
