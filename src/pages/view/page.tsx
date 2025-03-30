@@ -30,7 +30,7 @@ export default function ViewNotePage() {
   const plugins = useMdxPlugins(id!);
 
   useEffect(() => {
-    if (lastUpdate && curVersion.current < lastUpdate) {
+    if (lastUpdate && lastUpdate - curVersion.current > 5000) {
       curVersion.current = lastUpdate;
       refetch();
     }

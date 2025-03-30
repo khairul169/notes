@@ -1,8 +1,12 @@
 import { createHashRouter, RouterProvider } from "react-router";
+import { lazy } from "react";
+
 import MainLayout from "./components/layouts/main";
-import HomePage from "./pages/home/page";
-import ViewNotePage from "./pages/view/page";
-import SearchPage from "./pages/search/page";
+
+const HomePage = lazy(() => import("./pages/home/page"));
+const ViewNotePage = lazy(() => import("./pages/view/page"));
+const SearchPage = lazy(() => import("./pages/search/page"));
+const SettingsPage = lazy(() => import("./pages/settings/page"));
 
 const router = createHashRouter([
   {
@@ -19,6 +23,10 @@ const router = createHashRouter([
       {
         path: "search",
         Component: SearchPage,
+      },
+      {
+        path: "settings",
+        Component: SettingsPage,
       },
     ],
   },

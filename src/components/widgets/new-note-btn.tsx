@@ -40,8 +40,8 @@ export default function NewNoteButton({
   return (
     <Button
       className={cn(
-        "h-12",
-        isFloating && "fixed right-4 bottom-4 z-10 rounded-xl shadow-md",
+        "h-12 rounded-xl",
+        isFloating && "fixed right-4 bottom-4 z-10 shadow-md",
         className
       )}
       variant="filled"

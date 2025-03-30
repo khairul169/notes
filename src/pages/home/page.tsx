@@ -15,7 +15,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="overflow-y-auto p-4 pb-20 md:pb-4">
+    <div className="overflow-y-auto p-4 pb-20 md:p-8 md:pb-8">
       <h2 className="text-2xl">Notes</h2>
 
       {!data?.length ? (

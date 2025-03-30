@@ -18,6 +18,7 @@ const schema = `
     id TEXT PRIMARY KEY,
     noteId TEXT NOT NULL,
     type TEXT NOT NULL,
+    size INT NOT NULL,
     data TEXT NOT NULL,
     created INT NOT NULL,
     updated INT NOT NULL,

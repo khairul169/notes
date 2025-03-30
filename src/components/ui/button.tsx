@@ -12,8 +12,12 @@ const buttonVariants = cva(
           "bg-surface-container-low text-primary shadow-xs hover:shadow-sm",
         filled:
           "bg-primary text-on-primary hover:bg-primary/90 hover:shadow-xs",
+        tonal:
+          "bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 hover:shadow-xs",
         error: "bg-error text-on-error hover:shadow-xs",
         ghost: "text-primary bg-transparent",
+        outlined:
+          "border-outline text-primary hover:bg-surface-container-high border",
       },
       size: {
         default: "h-10 px-4 py-2 has-[>svg]:px-3",

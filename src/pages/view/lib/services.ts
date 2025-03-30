@@ -30,6 +30,7 @@ export async function storeAttachment(noteId: string, file: File) {
     id: attachmentId,
     noteId,
     type: file.type,
+    size: file.size,
     data: file,
     created: now,
     updated: now,

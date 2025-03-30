@@ -10,6 +10,8 @@ export function useQuery<T>(
 
   const refetch = useCallback(() => {
     setLoading(true);
+    setError(null);
+
     asyncFn()
       .then((res) => setData(res))
       .catch((err) => setError(err))

@@ -34,3 +34,14 @@ const emojiRegex =
 export function extractEmoji(text: string) {
   return text.match(emojiRegex)?.[0] || null;
 }
+
+export function bytesToReadable(bytes: unknown) {
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const num = Number(bytes);
+
+  if (Number.isNaN(num)) return "n/a";
+  if (num === 0) return "0 Bytes";
+
+  const i = Math.floor(Math.log2(num) / 10);
+  return `${(num / 2 ** (i * 10)).toFixed(2)} ${sizes[i]}`;
+}

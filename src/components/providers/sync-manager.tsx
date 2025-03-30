@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useAPI } from "@/hooks/useAPI";
 import { useDebounce } from "@/hooks/useDebounce";
-import api from "@/lib/api";
 import db, { Attachment } from "@/lib/db";
+import settingsStore from "@/stores/settings.store";
 import { noteSchema } from "@shared/schema";
 import { IndexableType } from "dexie";
 import { useCallback, useEffect, useRef } from "react";
+import { useStore } from "zustand";
 
 type Syncable = Record<
   string,
@@ -37,9 +39,11 @@ const syncable: Syncable = {
 
 export default function SyncManager() {
   const syncRef = useRef(false);
+  const settings = useStore(settingsStore, (state) => state.sync);
+  const api = useAPI();
 
   const onSync = useDebounce(async () => {
-    if (!navigator.onLine || syncRef.current) return;
+    if (!navigator.onLine || syncRef.current || !settings.enabled) return;
 
     syncRef.current = true;
 
@@ -97,18 +101,25 @@ export default function SyncManager() {
     syncRef.current = false;
   }, 300);
 
-  const onUpdate = useCallback(async (name: string, data: unknown) => {
-    if (!navigator.onLine || syncRef.current) return;
+  const onUpdate = useCallback(
+    async (name: string, data: unknown) => {
+      if (!navigator.onLine || syncRef.current || !settings.enabled) return;
 
-    const serialized = await Promise.resolve(
-      syncable[name].serialize?.(data) || data
-    );
-    await api.sync.$post({
-      json: { name: name as never, data: [serialized] },
-    });
-  }, []);
+      const serialized = await Promise.resolve(
+        syncable[name].serialize?.(data) || data
+      );
+      await api.sync.$post({
+        json: { name: name as never, data: [serialized] },
+      });
+    },
+    [settings, api]
+  );
 
   useEffect(() => {
+    if (!settings.enabled) {
+      return;
+    }
+
     const timer = setInterval(onSync, syncInterval);
     const listeners: Record<string, any>[] = [];
 
@@ -138,7 +149,7 @@ export default function SyncManager() {
       }
       clearInterval(timer);
     };
-  }, [onSync, onUpdate]);
+  }, [settings, api, onSync, onUpdate]);
 
   return null;
 }

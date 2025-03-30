@@ -236,6 +236,8 @@
 }
 .mdxeditor img {
   margin: 0;
+  width: 100%;
+  max-width: 240px;
 }
 
 .dark div[class*=codeMirrorWrapper] {

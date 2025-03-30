@@ -32,7 +32,7 @@ export default function NoteCard({ data }: { data: Note }) {
       )}
 
       <div className="prose prose-sm dark:prose-invert max-h-[100px] overflow-hidden text-sm [&>*]:mb-0 [&>*]:text-sm">
-        <Markdown disallowedElements={["a"]}>
+        <Markdown disallowedElements={["a", "img"]}>
           {data.content.split("\n").slice(1).join("\n")}
         </Markdown>
       </div>

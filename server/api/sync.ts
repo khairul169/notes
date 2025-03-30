@@ -23,20 +23,30 @@ const syncSchema = z.object({
 });
 
 const sync = new Hono()
-  //
+  /**
+   * Get items
+   */
   .get("/", zValidator("query", getSyncQuery), (c) => {
-    const query = c.req.valid("query");
-    const name = query.n;
+    const params = c.req.valid("query");
+    const { n: name, t: timestamp = 0 } = params;
+
+    const sql = `
+      SELECT * FROM ${name}
+      WHERE "timestamp" > $timestamp
+      ${!timestamp ? " AND deleted IS NULL" : ""}
+    `;
 
     const data = db
-      .query(`SELECT * FROM ${name} WHERE "timestamp" > $timestamp`)
-      .all({ $timestamp: query.t || 0 })
+      .query(sql)
+      .all({ $timestamp: timestamp })
       .map(db.parse) as Syncable[];
 
     return c.json({ name, data, timestamp: Date.now() });
   })
 
-  //
+  /**
+   * Sync data
+   */
   .post("/", zValidator("json", syncSchema), (c) => {
     const body = c.req.valid("json");
     const items = body.data as Syncable[];
@@ -68,6 +78,16 @@ const sync = new Hono()
       db.upsert(body.name, { ...item, timestamp: now });
     });
 
+    return c.json(true);
+  })
+
+  /**
+   * Clear all data
+   */
+  .post("/clear", async (c) => {
+    for (const table of syncable) {
+      db.exec(`DELETE FROM ${table}`);
+    }
     return c.json(true);
   });
 

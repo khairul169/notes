@@ -5,10 +5,12 @@ import db from "@/lib/db";
 import { cn, extractEmoji } from "@/lib/utils";
 import { useLocation, useSearchParams } from "react-router";
 import { createStore, useStore } from "zustand";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Note } from "@shared/schema";
 import icon from "@/assets/favicon.svg";
 import NewNoteButton from "./new-note-btn";
+import { Button } from "../ui/button";
+import { HomeIcon, SettingsIcon } from "lucide-react";
 
 export const sidebarStore = createStore(() => ({ open: false }));
 
@@ -37,8 +39,8 @@ export default function Sidebar() {
           open && "flex -translate-x-0"
         )}
       >
-        <div className="p-4">
-          <RippleButton href="/" className="flex h-12 items-center">
+        <div className="p-2">
+          <RippleButton href="/" className="m-2 flex h-12 items-center">
             <img src={icon} alt="Notes" className="size-8" />
             <p className="ml-2 text-2xl">Notes</p>
           </RippleButton>
@@ -47,6 +49,7 @@ export default function Sidebar() {
         </div>
 
         <div className="flex-1 gap-4 overflow-y-auto">
+          <NavList />
           <NoteList />
           <TagsList />
         </div>
@@ -54,6 +57,42 @@ export default function Sidebar() {
     </>
   );
 }
+
+const NavList = () => {
+  return (
+    <div className="px-2 md:mt-2">
+      <NavItem href="/" isExact title="Home" icon={<HomeIcon />} />
+      <NavItem href="/settings" title="Settings" icon={<SettingsIcon />} />
+    </div>
+  );
+};
+
+const NavItem = ({
+  title,
+  icon,
+  href,
+  isExact,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  href: string;
+  isExact?: boolean;
+}) => {
+  const { pathname } = useLocation();
+  const current = isExact ? pathname === href : pathname.startsWith(href);
+
+  return (
+    <Button
+      variant={current ? "tonal" : "ghost"}
+      className="w-full"
+      wrapperClassName="justify-start"
+      href={href}
+    >
+      {icon}
+      {title}
+    </Button>
+  );
+};
 
 const NoteList = () => {
   const notes = useLiveQuery(() =>
@@ -70,7 +109,7 @@ const NoteList = () => {
 
   return (
     <>
-      <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">
+      <p className="text-on-background/80 mt-4 mb-1 ml-6 text-xs">
         Last Updated
       </p>
 
@@ -85,10 +124,10 @@ const NoteItem = ({ data }: { data: Note }) => {
   return (
     <RippleButton
       href={`/note/${data.id}`}
-      className="hover:bg-surface-container w-full px-4 py-3 transition-colors md:py-2.5"
+      className="hover:bg-surface-container w-full px-6 py-3 transition-colors md:py-2.5"
     >
       {!icon && <MdOutlineInsertDriveFile className="shrink-0" />}
-      <span className="truncate">{data.title}</span>
+      <span className="truncate text-sm">{data.title}</span>
     </RippleButton>
   );
 };
@@ -106,9 +145,9 @@ const TagsList = () => {
 
   return (
     <>
-      <p className="text-on-background/80 mt-4 mb-2 ml-4 text-sm">Tags</p>
+      <p className="text-on-background/80 mt-4 mb-1 ml-6 text-xs">Tags</p>
 
-      <div className="-ml-2 flex flex-row flex-wrap items-center gap-1 p-4 pt-2">
+      <div className="-ml-2 flex flex-row flex-wrap items-center gap-1 px-6 py-4 pt-2">
         {tags?.map((tag) => (
           <RippleButton
             key={tag}
