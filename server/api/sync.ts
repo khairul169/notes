@@ -33,7 +33,6 @@ const sync = new Hono()
     const sql = `
       SELECT * FROM ${name}
       WHERE "timestamp" > $timestamp
-      ${!timestamp ? " AND deleted IS NULL" : ""}
     `;
 
     const data = db
