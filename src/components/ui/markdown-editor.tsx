@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   codeBlockPlugin,
   codeMirrorPlugin,
@@ -15,31 +15,12 @@ import {
 } from "@mdxeditor/editor";
 import { cn } from "@/lib/utils";
 import { nord } from "cm6-theme-nord";
+import { useStore } from "zustand";
+import settingsStore from "@/stores/settings.store";
 
 export type MarkdownEditorProps = React.ComponentProps<typeof MDXEditor>;
 
 export type MarkdownEditorRef = MDXEditorMethods;
-
-const defaultPlugins = [
-  headingsPlugin(),
-  listsPlugin(),
-  linkPlugin({ disableAutoLink: true }),
-  quotePlugin(),
-  thematicBreakPlugin(),
-  codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
-  codeMirrorPlugin({
-    codeBlockLanguages: {
-      js: "Javascript",
-      ts: "Typescript",
-      css: "CSS",
-      shell: "Shell",
-      sql: "SQL",
-      json: "JSON",
-    },
-    codeMirrorExtensions: [nord],
-  }),
-  markdownShortcutPlugin(),
-];
 
 export default function MarkdownEditor({
   plugins = [],
@@ -47,6 +28,32 @@ export default function MarkdownEditor({
   contentEditableClassName,
   ...props
 }: MarkdownEditorProps) {
+  const theme = useStore(settingsStore, (i) => i.theme);
+
+  const defaultPlugins = useMemo(
+    () => [
+      headingsPlugin(),
+      listsPlugin(),
+      linkPlugin({ disableAutoLink: true }),
+      quotePlugin(),
+      thematicBreakPlugin(),
+      codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
+      codeMirrorPlugin({
+        codeBlockLanguages: {
+          js: "Javascript",
+          ts: "Typescript",
+          css: "CSS",
+          shell: "Shell",
+          sql: "SQL",
+          json: "JSON",
+        },
+        codeMirrorExtensions: theme === "dark" ? [nord] : undefined,
+      }),
+      markdownShortcutPlugin(),
+    ],
+    [theme]
+  );
+
   return (
     <MDXEditor
       {...props}

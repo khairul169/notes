@@ -240,7 +240,7 @@
   max-width: 240px;
 }
 
-.dark div[class*=codeMirrorWrapper] {
+div[class*=codeMirrorWrapper] {
   --basePageBg: var(--md-sys-color-surface-container);
   --baseText: var(--md-sys-color-on-surface);
 
@@ -249,10 +249,10 @@
   color: var(--md-sys-color-on-surface);
   font-size: 14px;
 }
-.dark .cm-scroller {
+.cm-scroller {
   padding: 8px 0px !important;
 }
-.dark div[class*=codeMirrorToolbar] {
+div[class*=codeMirrorToolbar] {
   background: none;
   padding: 8px;
 }
