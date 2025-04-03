@@ -11,6 +11,7 @@ import icon from "@/assets/favicon.svg";
 import NewNoteButton from "./new-note-btn";
 import { Button } from "../ui/button";
 import { HomeIcon, SettingsIcon } from "lucide-react";
+import ThemeSwitcher from "./theme-switcher";
 
 export const sidebarStore = createStore(() => ({ open: false }));
 
@@ -39,7 +40,7 @@ export default function Sidebar() {
           open && "flex -translate-x-0"
         )}
       >
-        <div className="p-2">
+        <div className="p-4">
           <RippleButton href="/" className="m-2 flex h-12 items-center">
             <img src={icon} alt="Notes" className="size-8" />
             <p className="ml-2 text-2xl">Notes</p>
@@ -52,6 +53,10 @@ export default function Sidebar() {
           <NavList />
           <NoteList />
           <TagsList />
+        </div>
+
+        <div className="p-4">
+          <ThemeSwitcher />
         </div>
       </aside>
     </>
@@ -84,7 +89,7 @@ const NavItem = ({
   return (
     <Button
       variant={current ? "tonal" : "ghost"}
-      className="w-full"
+      className="h-12 w-full md:h-10"
       wrapperClassName="justify-start"
       href={href}
     >

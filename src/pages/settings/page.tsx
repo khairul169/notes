@@ -158,13 +158,17 @@ const APIServerStatus = () => {
   const api = useAPI();
   const sync = useStore(settingsStore, (i) => i.sync);
 
-  const status = useQuery(async () => {
-    const res = await api.index.$get();
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.text();
-  }, [api]);
+  const status = useQuery(
+    async () => {
+      const res = await api.index.$get();
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.text();
+    },
+    [api],
+    { enabled: sync.enabled }
+  );
 
   if (!sync.enabled) {
     return null;

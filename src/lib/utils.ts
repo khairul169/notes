@@ -22,7 +22,7 @@ export function getTags(content: string) {
   return (
     tags
       // filter hex color
-      .filter((i) => !hexColorRegex.test(i))
+      .filter((i) => !hexColorRegex.test(i) && i !== "#x20")
       // remove #
       .map((tag) => tag.slice(1))
   );

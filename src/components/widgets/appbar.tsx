@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Input } from "../ui/input";
 import { MdMenu, MdSearch } from "react-icons/md";
 import { Button } from "../ui/button";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
@@ -28,9 +27,7 @@ export default function Appbar({ className }: { className?: string }) {
     >
       <AppbarButton
         className="md:hidden"
-        onClick={() =>
-          setTimeout(() => sidebarStore.setState({ open: true }), 100)
-        }
+        onClick={() => sidebarStore.setState({ open: true })}
       >
         <MdMenu className="size-6" />
       </AppbarButton>
@@ -96,9 +93,9 @@ const SearchBar = () => {
   }, 300);
 
   return (
-    <Input
+    <input
       placeholder="Search..."
-      className="h-12 flex-1 border-0 pr-0 pl-0 focus-visible:ring-0 dark:bg-transparent"
+      className="h-12 flex-1 border-0 pr-0 pl-0 outline-0 focus-visible:ring-0 dark:bg-transparent"
       defaultValue={query || ""}
       onChange={(e) => onChange(e.target.value)}
     />

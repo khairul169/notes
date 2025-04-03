@@ -15,7 +15,7 @@ const buttonVariants = cva(
         tonal:
           "bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 hover:shadow-xs",
         error: "bg-error text-on-error hover:shadow-xs",
-        ghost: "text-primary bg-transparent",
+        ghost: "text-primary hover:bg-surface-container bg-transparent",
         outlined:
           "border-outline text-primary hover:bg-surface-container-high border",
       },

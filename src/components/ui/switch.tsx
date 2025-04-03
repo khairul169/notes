@@ -1,13 +1,17 @@
 import * as React from "react";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
-
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "lucide-react";
 
 function Switch({
   className,
+  icon,
+  thumb,
   ...props
-}: React.ComponentProps<typeof SwitchPrimitive.Root>) {
+}: React.ComponentProps<typeof SwitchPrimitive.Root> & {
+  icon?: React.ReactNode;
+  thumb?: string;
+}) {
   return (
     <SwitchPrimitive.Root
       data-slot="switch"
@@ -21,11 +25,12 @@ function Switch({
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
         className={cn(
-          "bg-outline pointer-events-none flex size-6 translate-x-[2px] items-center justify-center rounded-full ring-0 transition-all duration-300 [&_svg]:opacity-0",
-          "data-[state=checked]:bg-on-primary data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=checked]:[&_svg]:opacity-100"
+          "bg-outline pointer-events-none flex size-6 translate-x-[2px] items-center justify-center rounded-full ring-0 transition-all duration-300 [&_svg]:opacity-0 [&_svg]:transition-opacity [&_svg]:duration-100",
+          "data-[state=checked]:bg-on-primary data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=checked]:[&_svg]:opacity-100",
+          thumb
         )}
       >
-        <CheckIcon className="size-4 transition-opacity duration-300" />
+        {icon || <CheckIcon className="size-4" />}
       </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>
   );

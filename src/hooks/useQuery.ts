@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 
+type UseQueryOptions = {
+  enabled?: boolean;
+};
+
 export function useQuery<T>(
   asyncFn: () => Promise<T>,
-  dependencies: unknown[] = []
+  dependencies: unknown[] = [],
+  options: UseQueryOptions = {}
 ) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -20,8 +25,10 @@ export function useQuery<T>(
   }, dependencies);
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    if (options.enabled !== false) {
+      refetch();
+    }
+  }, [refetch, options.enabled]);
 
   return { data, error, loading, refetch };
 }

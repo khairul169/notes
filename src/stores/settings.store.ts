@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { produce, WritableDraft } from "immer";
 
 type SettingsStore = {
+  theme: "light" | "dark";
   sync: {
     enabled: boolean;
     url: string;
@@ -11,6 +12,7 @@ type SettingsStore = {
 };
 
 const initialState: SettingsStore = {
+  theme: "dark",
   sync: {
     enabled: false,
     url: "",
