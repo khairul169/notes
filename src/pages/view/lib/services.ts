@@ -29,6 +29,7 @@ export async function storeAttachment(noteId: string, file: File) {
   await db.attachments.put({
     id: attachmentId,
     noteId,
+    name: file.name,
     type: file.type,
     size: file.size,
     data: file,

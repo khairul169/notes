@@ -5,7 +5,8 @@ import db, { Attachment } from "@/lib/db";
 import settingsStore from "@/stores/settings.store";
 import { noteSchema } from "@shared/schema";
 import { IndexableType } from "dexie";
-import { useCallback, useEffect, useRef } from "react";
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "zustand";
 
 type Syncable = Record<
@@ -13,6 +14,7 @@ type Syncable = Record<
   Partial<{
     parse: (i: any) => any;
     serialize: (i: any) => any;
+    limit: number;
   }>
 >;
 
@@ -20,6 +22,7 @@ const syncInterval = 60000;
 const syncable: Syncable = {
   notes: {
     parse: noteSchema.parse,
+    limit: 10,
   },
   attachments: {
     parse: (item: Attachment) => {
@@ -34,76 +37,120 @@ const syncable: Syncable = {
       const data = Buffer.from(await item.data.arrayBuffer());
       return { ...item, data: data.toString("base64") };
     },
+    limit: 1,
   },
 };
+
+async function pushToRemote(
+  name: string,
+  lastSync: number,
+  api: ReturnType<typeof useAPI>
+) {
+  const localData = await db
+    .table(name)
+    .where("updated")
+    .above(lastSync)
+    .toArray();
+  const serialized = await Promise.all(
+    localData.map(async (i) => {
+      return Promise.resolve(syncable[name].serialize?.(i) || i);
+    })
+  );
+
+  if (serialized.length > 0) {
+    const res = await api.sync.$post({
+      json: { name: name as never, data: serialized },
+    });
+    if (!res.ok) {
+      throw new Error("Failed to sync: " + res.statusText);
+    }
+  }
+}
+
+async function pullFromRemote(
+  name: string,
+  lastSync: number,
+  api: ReturnType<typeof useAPI>
+) {
+  const limit = syncable[name].limit || 10;
+  let curPage = 1;
+  let timestamp = 0;
+
+  while (curPage > 0) {
+    const res = await api.sync
+      .$get({
+        query: {
+          name,
+          t: lastSync.toString(),
+          limit: String(limit),
+          page: String(curPage),
+        },
+      })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to sync: " + res.statusText);
+        }
+        return res.json();
+      });
+
+    curPage = res.next != null ? res.next : 0;
+
+    const remoteData = res.data.map((i) => {
+      const parser = syncable[name].parse;
+      return parser ? parser(i) : i;
+    });
+    await db.table(name).bulkPut(remoteData);
+    timestamp = res.timestamp;
+  }
+
+  return timestamp;
+}
 
 export default function SyncManager() {
   const syncRef = useRef(false);
   const settings = useStore(settingsStore, (state) => state.sync);
   const api = useAPI();
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  const onSync = useDebounce(async () => {
-    if (!navigator.onLine || syncRef.current || !settings.enabled) return;
+  const onSync = useDebounce(
+    useCallback(async () => {
+      if (!navigator.onLine || syncRef.current || !settings.enabled) return;
 
-    syncRef.current = true;
+      syncRef.current = true;
+      setIsSyncing(true);
 
-    try {
-      for (const name of Object.keys(syncable)) {
-        const lastSync = await db._meta
-          .where({ name })
-          .first()
-          .then((i) => i?.lastSync || 0);
+      try {
+        for (const name of Object.keys(syncable)) {
+          const lastSync = await db._meta
+            .where({ name })
+            .first()
+            .then((i) => i?.lastSync || 0);
 
-        // Apply changes to remote
-        const localData = await db
-          .table(name)
-          .where("updated")
-          .above(lastSync)
-          .toArray();
-        const serialized = await Promise.all(
-          localData.map(async (i) => {
-            return Promise.resolve(syncable[name].serialize?.(i) || i);
-          })
-        );
+          // Apply changes to remote
+          await pushToRemote(name, lastSync, api);
 
-        if (serialized.length > 0) {
-          const res = await api.sync.$post({
-            json: { name: name as never, data: serialized },
-          });
-          if (!res.ok) {
-            throw new Error("Failed to sync: " + res.statusText);
-          }
+          // Apply changes from remote
+          const timestamp = await pullFromRemote(name, lastSync, api);
+
+          // Update last sync
+          await db._meta.put({ name, lastSync: timestamp });
         }
-
-        // Apply changes from remote
-        const remote = await api.sync
-          .$get({ query: { n: name as never, t: lastSync.toString() } })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error("Failed to sync: " + res.statusText);
-            }
-            return res.json();
-          });
-
-        const remoteData = remote.data.map((i) => {
-          const parser = syncable[name].parse;
-          return parser ? parser(i) : i;
-        });
-        await db.table(name).bulkPut(remoteData);
-
-        // Update last sync
-        await db._meta.put({ name, lastSync: remote.timestamp });
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error(err);
-    }
 
-    syncRef.current = false;
-  }, 300);
+      syncRef.current = false;
+      setIsSyncing(false);
+    }, [settings, setIsSyncing, api]),
+    300
+  );
 
   const onUpdate = useCallback(
     async (name: string, data: unknown) => {
       if (!navigator.onLine || syncRef.current || !settings.enabled) return;
+
+      syncRef.current = true;
+      setIsSyncing(true);
 
       const serialized = await Promise.resolve(
         syncable[name].serialize?.(data) || data
@@ -111,6 +158,9 @@ export default function SyncManager() {
       await api.sync.$post({
         json: { name: name as never, data: [serialized] },
       });
+
+      syncRef.current = false;
+      setIsSyncing(false);
     },
     [settings, api]
   );
@@ -150,6 +200,14 @@ export default function SyncManager() {
       clearInterval(timer);
     };
   }, [settings, api, onSync, onUpdate]);
+
+  if (isSyncing) {
+    return (
+      <div className="fixed top-2 right-2">
+        <Loader2 className="size-5 animate-spin" />
+      </div>
+    );
+  }
 
   return null;
 }

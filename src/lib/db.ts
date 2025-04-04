@@ -15,6 +15,7 @@ export type TableMeta = {
 export type Attachment = {
   id: string;
   noteId: string;
+  name: string;
   type: string;
   size: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
