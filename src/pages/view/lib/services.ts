@@ -1,7 +1,22 @@
 import { BlockDocument } from "@/components/ui/block-editor";
-import db from "@/lib/db";
+import db, { Note } from "@/lib/db";
 import { getTitle, getTags } from "@/lib/utils";
 import { nanoid } from "nanoid";
+
+export async function getNote(id: string) {
+  const data = await db.notes.get(id!);
+  if (!data) {
+    throw new Error("Note not found");
+  }
+  return data;
+}
+
+export async function updateNote(id: string, data: Partial<Note>) {
+  return db.notes.update(id, {
+    ...data,
+    updated: Date.now(),
+  });
+}
 
 export async function deleteNote(id: string) {
   // Mark note as deleted

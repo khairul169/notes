@@ -1,20 +1,13 @@
 import { useCallback } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import db, { Note } from "@/lib/db";
+import { Note } from "@/lib/db";
 import { useQuery } from "@/hooks/useQuery";
-import { putNoteContent } from "./services";
+import { getNote, putNoteContent } from "./services";
 import { BlockDocument, BlockEditor } from "@/components/ui/block-editor";
 import * as htmlToText from "html-to-text";
 
 export function useNoteQuery(id: string) {
-  return useQuery(async () => {
-    const data = await db.notes.get(id!);
-    if (!data) {
-      throw new Error("Note not found");
-    }
-
-    return data;
-  }, [id]);
+  return useQuery(() => getNote(id), [id]);
 }
 
 export function useOnChange(editor: BlockEditor, data?: Note | null) {

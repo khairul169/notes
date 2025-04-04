@@ -9,6 +9,7 @@ const schema = `
     content TEXT NOT NULL,
     summary TEXT NOT NULL,
     tags TEXT NOT NULL DEFAULT '[]',
+    pinned INT NOT NULL DEFAULT '0',
     created INT NOT NULL,
     updated INT NOT NULL,
     deleted INT,

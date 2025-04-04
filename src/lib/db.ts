@@ -17,6 +17,7 @@ export type Note = {
   content: unknown;
   summary: string;
   tags: string[];
+  pinned: number;
   created: number;
   updated: number;
   deleted?: number | null;
@@ -49,7 +50,7 @@ db.version(1).stores({
   _data: "key",
   _meta: "name",
 
-  notes: "id, tags, created, updated, deleted",
+  notes: "id, tags, [pinned+updated], created, updated, deleted",
   attachments: "id, noteId, type, created, updated, deleted",
 });
 

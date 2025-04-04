@@ -6,7 +6,11 @@ import NewNoteButton from "@/components/widgets/new-note-btn";
 
 export default function HomePage() {
   const data = useLiveQuery(async () => {
-    const res = await db.notes.orderBy("updated").reverse().limit(32).toArray();
+    const res = await db.notes
+      .orderBy("[pinned+updated]")
+      .reverse()
+      .limit(32)
+      .toArray();
     return res.filter((i) => !i.deleted);
   });
 

@@ -1,4 +1,8 @@
-import { MdOutlineInsertDriveFile, MdTag } from "react-icons/md";
+import {
+  MdOutlineInsertDriveFile,
+  MdOutlinePushPin,
+  MdTag,
+} from "react-icons/md";
 import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
 import db, { Note } from "@/lib/db";
@@ -99,25 +103,50 @@ const NavItem = ({
 };
 
 const NoteList = () => {
-  const notes = useLiveQuery(() =>
+  const pinned = useLiveQuery(() =>
+    db.notes
+      .orderBy("[pinned+updated]")
+      .reverse()
+      .filter((i) => !i.deleted && i.pinned > 0)
+      .toArray()
+  );
+  const lastUpdated = useLiveQuery(() =>
     db.notes
       .orderBy("updated")
       .reverse()
-      .filter((i) => !i.deleted)
+      .filter((i) => !i.deleted && !i.pinned)
       .limit(5)
       .toArray()
   );
-  if (!notes?.length) {
-    return null;
-  }
 
   return (
     <>
-      <p className="text-on-background/80 mt-4 mb-1 ml-6 text-xs">
-        Last Updated
-      </p>
+      {pinned && pinned.length > 0 && (
+        <>
+          <p className="text-on-background/80 mt-4 mb-1 ml-6 text-xs">
+            Pinned
+            <MdOutlinePushPin className="ml-1 inline text-lg" />
+          </p>
+          <div>
+            {pinned.map((note) => (
+              <NoteItem key={note.id} data={note} />
+            ))}
+          </div>
+        </>
+      )}
 
-      <div>{notes?.map((note) => <NoteItem key={note.id} data={note} />)}</div>
+      {lastUpdated && lastUpdated.length > 0 && (
+        <>
+          <p className="text-on-background/80 mt-4 mb-1 ml-6 text-xs">
+            Last Updated
+          </p>
+          <div>
+            {lastUpdated.map((note) => (
+              <NoteItem key={note.id} data={note} />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 };
@@ -131,7 +160,7 @@ const NoteItem = ({ data }: { data: Note }) => {
       className="hover:bg-surface-container-high w-full px-6 py-3 transition-colors md:py-2.5"
     >
       {!icon && <MdOutlineInsertDriveFile className="shrink-0" />}
-      <span className="truncate text-sm">{data.title}</span>
+      <span className="flex-1 truncate text-sm">{data.title}</span>
     </RippleButton>
   );
 };

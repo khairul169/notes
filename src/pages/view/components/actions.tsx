@@ -5,9 +5,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AppbarActions, AppbarButton } from "@/components/widgets/appbar";
-import { MdDeleteOutline, MdMoreVert } from "react-icons/md";
-import { deleteNote } from "../lib/services";
+import { MdDeleteOutline, MdMoreVert, MdOutlinePushPin } from "react-icons/md";
+import { deleteNote, getNote, updateNote } from "../lib/services";
 import { Note } from "@/lib/db";
+import { toast } from "sonner";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const Actions = ({
   data,
@@ -16,6 +18,20 @@ const Actions = ({
   data?: Note | null;
   refetch: () => void;
 }) => {
+  const pinned = useLiveQuery(
+    () => getNote(data!.id).then((i) => i?.pinned > 0),
+    [data!.id]
+  );
+
+  const onTogglePinned = async () => {
+    try {
+      await updateNote(data!.id, { pinned: pinned ? 0 : 1 });
+      toast.success(`Note ${pinned ? "unpinned" : "pinned"}.`);
+    } catch (err) {
+      toast.error((err as Error).message || "An error occured.");
+    }
+  };
+
   const onDelete = async () => {
     if (
       data?.id &&
@@ -35,6 +51,9 @@ const Actions = ({
           </AppbarButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" className="mr-4">
+          <DropdownMenuItem onClick={onTogglePinned}>
+            <MdOutlinePushPin /> {pinned ? "Unpin" : "Pin"}
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={onDelete}>
             <MdDeleteOutline /> Delete
           </DropdownMenuItem>

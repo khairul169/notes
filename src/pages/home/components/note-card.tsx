@@ -1,6 +1,6 @@
 import RippleButton from "@/components/ui/ripple-button";
 import { extractEmoji } from "@/lib/utils";
-import { MdOutlineInsertDriveFile } from "react-icons/md";
+import { MdOutlineInsertDriveFile, MdOutlinePushPin } from "react-icons/md";
 import { Note } from "@/lib/db";
 
 export default function NoteCard({ data }: { data: Note }) {
@@ -14,7 +14,8 @@ export default function NoteCard({ data }: { data: Note }) {
     >
       <div className="flex items-center gap-2 text-lg">
         {!icon && <MdOutlineInsertDriveFile className="shrink-0" />}
-        <span className="truncate">{data.title}</span>
+        <span className="flex-1 truncate">{data.title}</span>
+        {data.pinned ? <MdOutlinePushPin /> : null}
       </div>
 
       {data.tags?.length > 0 && (
