@@ -35,6 +35,7 @@ export default function NewNoteButton({
       title: getTitle(content),
       content: content,
       summary: "",
+      pinned: 0,
       tags: [],
       created: now,
       updated: now,

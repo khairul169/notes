@@ -66,11 +66,7 @@ export default function SettingsPage() {
       }
 
       const note = await db.notes.get(item.noteId);
-      if (
-        !note ||
-        note.deleted ||
-        !note.content.includes(`attachment://${item.id}`)
-      ) {
+      if (!note || note.deleted || !note.summary.includes(item.id)) {
         await db.attachments.put({ ...item, deleted: Date.now() });
         await db.attachments.delete(item.id);
       }
