@@ -6,7 +6,8 @@ export default class LocalStorage implements BaseStorage {
   private dir: string = "";
 
   constructor() {
-    this.dir = join(process.cwd(), "storage");
+    const baseDir = process.env.STORAGE_BASE_DIR || "storage";
+    this.dir = join(process.cwd(), baseDir);
   }
 
   async put(path: string, data: Buffer | string): Promise<void> {

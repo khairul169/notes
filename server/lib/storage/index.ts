@@ -1,5 +1,6 @@
 import { BaseStorage } from "./base";
 import LocalStorage from "./local-storage";
+import S3Storage from "./s3-storage";
 
 export default class Storage implements BaseStorage {
   private storage!: BaseStorage;
@@ -10,6 +11,9 @@ export default class Storage implements BaseStorage {
     switch (type) {
       case "local":
         this.storage = new LocalStorage();
+        break;
+      case "s3":
+        this.storage = new S3Storage();
         break;
       default:
         throw new Error("Invalid storage type");
