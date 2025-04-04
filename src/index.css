@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "@mdxeditor/editor/style.css";
 
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
@@ -207,25 +206,25 @@
   }
 
   body::-webkit-scrollbar,
-  .scrollable::-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {
     width: var(--sb-size);
   }
 
   body::-webkit-scrollbar-track,
-  .scrollable::-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: var(--sb-bg);
     border-radius: 10px;
   }
 
   body::-webkit-scrollbar-thumb,
-  .scrollable::-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: var(--sb-color);
     border-radius: 10px;
   }
 
   @supports not selector(::-webkit-scrollbar) {
     body,
-    .scrollable {
+    .overflow-y-auto {
       scrollbar-color: var(--sb-color) var(--sb-bg);
     }
   }
