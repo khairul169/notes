@@ -7,6 +7,7 @@ const schema = `
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
+    summary TEXT NOT NULL,
     tags TEXT NOT NULL DEFAULT '[]',
     created INT NOT NULL,
     updated INT NOT NULL,

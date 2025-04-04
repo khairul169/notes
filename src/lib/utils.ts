@@ -1,3 +1,4 @@
+import { BlockDocument } from "@/components/ui/block-editor";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -5,11 +6,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getTitle(content: string) {
-  let line = content.split("\n")[0];
-  // remove any markdown syntax, like header, bold, etc
-  line = line.replace(/[*#_]/g, "");
-  return line.trim();
+export function getTitle(doc: BlockDocument) {
+  const content = doc[0]?.content as unknown;
+  if (typeof content === "string") {
+    return content.replace(/[*#_]/g, "").trim();
+  }
+  if (Array.isArray(content)) {
+    const row = (content as { type: string; text?: unknown }[])
+      .filter((i) => i.type === "text" && typeof i.text === "string")
+      .map((i) => i.text);
+    return row.join(" ").replace(/[*#_]/g, "").trim();
+  }
+  return "";
 }
 
 const hexColorRegex = /^#(?:[0-9a-fA-F]{3,4}){1,2}$/;

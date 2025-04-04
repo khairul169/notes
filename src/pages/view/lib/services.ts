@@ -1,5 +1,6 @@
+import { BlockDocument } from "@/components/ui/block-editor";
 import db from "@/lib/db";
-import { getTags, getTitle } from "@/lib/utils";
+import { getTitle, getTags } from "@/lib/utils";
 import { nanoid } from "nanoid";
 
 export async function deleteNote(id: string) {
@@ -11,12 +12,24 @@ export async function deleteNote(id: string) {
   });
 }
 
-export async function putNoteContent(id: string, content: string) {
+export async function putNoteContent(
+  id: string,
+  content: BlockDocument,
+  plain: string
+) {
   const now = Date.now();
+  const summary = plain
+    .replace(/\n\s*\n/g, "\n")
+    .split("\n")
+    .slice(1)
+    .join("\n");
+  const tags = getTags(plain) || [];
+
   await db.notes.update(id, {
     title: getTitle(content) || "Untitled",
     content,
-    tags: getTags(content || ""),
+    summary,
+    tags,
     updated: Date.now(),
   });
   return now;
@@ -37,12 +50,15 @@ export async function storeAttachment(noteId: string, file: File) {
     updated: now,
   });
 
-  return `attachment://${attachmentId}`;
+  return attachmentId;
 }
 
 export async function getAttachment(uri: string) {
-  const id = uri.startsWith("attachment://") ? uri.split("//")[1] : uri;
-  const file = await db.attachments.get(id);
+  if (uri.startsWith("https://") || uri.startsWith("http://")) {
+    return null;
+  }
+
+  const file = await db.attachments.get(uri);
   if (!file) {
     return null;
   }

@@ -1,4 +1,5 @@
 import SyncManager from "./components/providers/sync-manager";
+import { Toaster } from "./components/ui/sonner";
 import Router from "./router";
 
 export default function App() {
@@ -6,6 +7,7 @@ export default function App() {
     <>
       <Router />
       <SyncManager />
+      <Toaster />
     </>
   );
 }

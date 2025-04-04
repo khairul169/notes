@@ -1,8 +1,7 @@
 import { useQuery } from "@/hooks/useQuery";
-import { fts } from "@/lib/db";
+import { fts, Note } from "@/lib/db";
 import { useSearchParams } from "react-router";
 import NoteCard from "../home/components/note-card";
-import { Note } from "@shared/schema";
 import NewNoteButton from "@/components/widgets/new-note-btn";
 import Loader from "@/components/ui/loader";
 

@@ -1,6 +1,5 @@
 import Dexie, { type EntityTable } from "dexie";
 import FullTextSearch from "./fts";
-import { Note } from "@shared/schema";
 
 export type KeyVal = {
   key: string;
@@ -10,6 +9,17 @@ export type KeyVal = {
 export type TableMeta = {
   name: string;
   lastSync: number;
+};
+
+export type Note = {
+  id: string;
+  title: string;
+  content: unknown;
+  summary: string;
+  tags: string[];
+  created: number;
+  updated: number;
+  deleted?: number | null;
 };
 
 export type Attachment = {
@@ -43,8 +53,11 @@ db.version(1).stores({
   attachments: "id, noteId, type, created, updated, deleted",
 });
 
-const fts = new FullTextSearch<keyof Tables>(db);
-fts.addTable("notes", "id", "content");
+const fts = new FullTextSearch<Tables>(db);
+
+fts.addTable("notes", "id", (i) => {
+  return [i.title, i.summary, ...i.tags.map((t: string) => `#${t}`)].join(" ");
+});
 
 export { fts };
 export default db;

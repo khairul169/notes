@@ -1,8 +1,7 @@
 import RippleButton from "@/components/ui/ripple-button";
-import Markdown from "react-markdown";
 import { extractEmoji } from "@/lib/utils";
-import { Note } from "@shared/schema";
 import { MdOutlineInsertDriveFile } from "react-icons/md";
+import { Note } from "@/lib/db";
 
 export default function NoteCard({ data }: { data: Note }) {
   const icon = extractEmoji(data.title);
@@ -10,7 +9,7 @@ export default function NoteCard({ data }: { data: Note }) {
   return (
     <RippleButton
       href={`/note/${data.id}`}
-      className="bg-surface-container-high hover:bg-surface-container-highest w-full items-start rounded-lg px-4 py-2.5 transition-colors"
+      className="bg-surface-container hover:bg-surface-container-high w-full items-start rounded-lg px-4 py-2.5 transition-colors"
       wrapperClassName="flex-col items-stretch h-full"
     >
       <div className="flex items-center gap-2 text-lg">
@@ -31,10 +30,13 @@ export default function NoteCard({ data }: { data: Note }) {
         </div>
       )}
 
-      <div className="prose prose-sm dark:prose-invert max-h-[100px] overflow-hidden text-sm [&>*]:mb-0 [&>*]:text-sm">
-        <Markdown disallowedElements={["a", "img"]}>
-          {data.content.split("\n").slice(1).join("\n")}
-        </Markdown>
+      <div className="max-h-[100px] overflow-hidden text-sm [&>*]:mb-0 [&>*]:text-sm">
+        {data.summary
+          .substring(0, 180)
+          .split("\n")
+          .map((line, idx) => (
+            <p key={idx}>{line}</p>
+          ))}
       </div>
       <div className="flex-1" />
 

@@ -5,9 +5,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AppbarActions, AppbarButton } from "@/components/widgets/appbar";
-import { Note } from "@shared/schema";
 import { MdDeleteOutline, MdMoreVert } from "react-icons/md";
 import { deleteNote } from "../lib/services";
+import { Note } from "@/lib/db";
 
 const Actions = ({
   data,

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAPI } from "@/hooks/useAPI";
 import { useDebounce } from "@/hooks/useDebounce";
-import db, { Attachment } from "@/lib/db";
+import db, { Attachment, Note } from "@/lib/db";
 import settingsStore from "@/stores/settings.store";
-import { noteSchema } from "@shared/schema";
 import { IndexableType } from "dexie";
 import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -21,7 +20,9 @@ type Syncable = Record<
 const syncInterval = 60000;
 const syncable: Syncable = {
   notes: {
-    parse: noteSchema.parse,
+    serialize: (item: Note) => {
+      return { ...item, content: JSON.stringify(item.content) };
+    },
     limit: 10,
   },
   attachments: {

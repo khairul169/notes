@@ -200,7 +200,7 @@
     @apply border-outline;
   }
   body {
-    @apply bg-background text-on-background;
+    @apply bg-surface-container-low text-on-surface;
     --sb-color: var(--md-sys-color-surface-bright);
     --sb-bg: var(--md-sys-color-background);
     --sb-size: 7px;
@@ -231,28 +231,55 @@
   }
 }
 
-.mdxeditor li[role="checkbox"]::before, .mdxeditor li[role="checkbox"]::after {
-  margin-top: 7px;
-}
-.mdxeditor img {
-  margin: 0;
-  width: 100%;
-  max-width: 240px;
+.bn-container {
+  margin-left: -8px;
 }
 
-div[class*=codeMirrorWrapper] {
-  --basePageBg: var(--md-sys-color-surface-container);
-  --baseText: var(--md-sys-color-on-surface);
+.bn-shadcn .bn-editor {
+  background-color: transparent;
+}
 
-  border: none;
-  padding: 0;
-  color: var(--md-sys-color-on-surface);
-  font-size: 14px;
+.bn-shadcn {
+  --primary: 217.5 38.1% 41.18%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 13.57% 39.02%;
+  --secondary-foreground: 0 0% 100%;
+  --border: 230 11.32% 79.22%;
+  --bn-colors-side-menu: #898989;
 }
-.cm-scroller {
-  padding: 8px 0px !important;
+
+.bn-shadcn .bn-button.bn-bg-primary {
+  --radius: 10rem;
 }
-div[class*=codeMirrorToolbar] {
-  background: none;
-  padding: 8px;
+
+.bn-shadcn.dark {
+  --background: 222.9 17.07% 8.039%;
+  --foreground: 240 13.73% 90%;
+  --card: 222.9 17.07% 8.039%;
+  --card-foreground: 240 13.73% 90%;
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --primary: 219.5 100% 83.33%;
+  --primary-foreground: 213.2 80.95% 20.59%;
+  --secondary: 224 30% 80.39%;
+  --secondary-foreground: 218.4 23.81% 20.59%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 222 6.849% 28.63%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
+.bn-editor[contenteditable="true"] [data-file-block] .bn-add-file-button:hover,
+[data-file-block] .bn-file-name-with-icon:hover,
+.ProseMirror-selectednode .bn-file-name-with-icon {
+  background-color: var(--color-surface-container-highest);
+}
+
+[data-file-block] .bn-add-file-button {
+  background-color: var(--color-surface-container-high);
 }

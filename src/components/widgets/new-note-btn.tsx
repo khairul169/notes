@@ -1,11 +1,11 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { Note } from "@shared/schema";
 import { nanoid } from "nanoid";
 import { cn, getTitle } from "@/lib/utils";
 import { useNavigate } from "react-router";
-import db from "@/lib/db";
+import db, { Note } from "@/lib/db";
 import { MdAdd } from "react-icons/md";
+import { BlockDocument } from "../ui/block-editor";
 
 type NewNoteButtonProps = React.ComponentProps<typeof Button> & {
   isFloating?: boolean;
@@ -23,12 +23,18 @@ export default function NewNoteButton({
       return;
     }
 
-    const content = "# 📒 New Note";
+    const content: BlockDocument = [
+      {
+        type: "heading",
+        content: "📒 New Note",
+      } as never,
+    ];
     const now = Date.now();
     const data: Note = {
       id: nanoid(),
       title: getTitle(content),
       content: content,
+      summary: "",
       tags: [],
       created: now,
       updated: now,

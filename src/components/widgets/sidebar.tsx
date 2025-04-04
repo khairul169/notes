@@ -1,12 +1,11 @@
 import { MdOutlineInsertDriveFile, MdTag } from "react-icons/md";
 import RippleButton from "../ui/ripple-button";
 import { useLiveQuery } from "dexie-react-hooks";
-import db from "@/lib/db";
+import db, { Note } from "@/lib/db";
 import { cn, extractEmoji } from "@/lib/utils";
 import { useLocation, useSearchParams } from "react-router";
 import { createStore, useStore } from "zustand";
 import React, { useEffect } from "react";
-import { Note } from "@shared/schema";
 import icon from "@/assets/favicon.svg";
 import NewNoteButton from "./new-note-btn";
 import { Button } from "../ui/button";
@@ -36,7 +35,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          "bg-surface-container md:bg-background fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl shadow-md transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none md:shadow-none",
+          "bg-surface-container-low fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl shadow-md transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none md:shadow-none",
           open && "flex -translate-x-0"
         )}
       >
@@ -129,7 +128,7 @@ const NoteItem = ({ data }: { data: Note }) => {
   return (
     <RippleButton
       href={`/note/${data.id}`}
-      className="hover:bg-surface-container w-full px-6 py-3 transition-colors md:py-2.5"
+      className="hover:bg-surface-container-high w-full px-6 py-3 transition-colors md:py-2.5"
     >
       {!icon && <MdOutlineInsertDriveFile className="shrink-0" />}
       <span className="truncate text-sm">{data.title}</span>
@@ -157,7 +156,7 @@ const TagsList = () => {
           <RippleButton
             key={tag}
             href={`/search?query=${encodeURIComponent("#" + tag)}`}
-            className="hover:bg-surface-container-highest rounded-md px-2 py-1 text-sm"
+            className="hover:bg-surface-container-high rounded-md px-2 py-1 text-sm"
             wrapperClassName="gap-1"
           >
             <MdTag className="text-on-surface/60" />

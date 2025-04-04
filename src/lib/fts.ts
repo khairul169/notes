@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-expect-error no types
 import FlexSearch from "flexsearch";
 import Dexie, { Table } from "dexie";
 
 export default class FullTextSearch<
-  TKeys extends string = string,
+  TTables extends object,
+  TKeys extends keyof TTables = keyof TTables,
   DB extends Dexie = Dexie,
 > {
   indexes: Record<TKeys, FlexSearch.Index> = {} as never;
@@ -11,7 +13,7 @@ export default class FullTextSearch<
     TKeys,
     {
       key: string;
-      columns: string | string[];
+      selector: (item: unknown) => string;
       isPrepared: boolean;
       table: Table;
     }
@@ -51,7 +53,7 @@ export default class FullTextSearch<
     return table.bulkGet(ids) as Promise<TValue[]>;
   }
 
-  async addTable(name: TKeys, key: string, columns: string | string[]) {
+  async addTable(name: TKeys, key: string, selector: (item: any) => string) {
     if (this.tables[name] != null) {
       return;
     }
@@ -59,34 +61,28 @@ export default class FullTextSearch<
     const table = this.db.table(name as never);
     this.tables[name] = {
       key,
-      columns,
+      selector: selector as never,
       isPrepared: false,
       table,
     };
   }
 
   async prepare(name: TKeys) {
-    const { key, columns } = this.tables[name];
+    const { key, selector } = this.tables[name];
     const table = this.db.table(name as never);
-
-    const getData = (item: Record<string, unknown>) => {
-      return Array.isArray(columns)
-        ? columns.map((col) => item[col]).join(" ")
-        : item[columns];
-    };
 
     // Populate current data
     const items = await table.toArray();
     await Promise.all(
-      items.map(async (item) => this.add(name, item[key], getData(item)))
+      items.map(async (item) => this.add(name, item[key], selector(item)))
     );
 
     // Setup hooks
     table.hook("creating", (_, item) => {
-      this.add(name, item[key], getData(item));
+      this.add(name, item[key], selector(item));
     });
     table.hook("updating", (_mods, _key, item) => {
-      this.add(name, item[key], getData(item));
+      this.add(name, item[key], selector(item));
     });
 
     this.tables[name].isPrepared = true;

@@ -12,7 +12,7 @@ export default function MainLayout() {
       <div className="flex flex-1 flex-col items-stretch overflow-hidden md:p-4 md:pl-0">
         <Appbar className="md:mb-4" />
 
-        <main className="md:bg-surface-container-low flex flex-1 flex-col items-stretch overflow-hidden md:rounded-2xl">
+        <main className="bg-background flex flex-1 flex-col items-stretch overflow-hidden md:rounded-2xl">
           <Suspense fallback={<Loader className="flex-1" />}>
             <Outlet />
           </Suspense>
