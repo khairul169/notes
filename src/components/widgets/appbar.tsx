@@ -21,7 +21,7 @@ export default function Appbar({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-background md:bg-surface-container-high relative z-[1001] flex h-12 items-center overflow-hidden md:rounded-full md:pl-4",
+        "bg-background md:bg-surface-container-high flex h-12 items-center overflow-hidden md:rounded-full md:pl-4",
         className
       )}
     >

@@ -230,12 +230,9 @@
   }
 }
 
-.bn-container {
-  margin-left: -8px;
-}
-
-.bn-shadcn .bn-editor {
+.bn-editor {
   background-color: transparent;
+  padding-right: 8px;
 }
 
 .bn-shadcn {
@@ -281,4 +278,16 @@
 
 [data-file-block] .bn-add-file-button {
   background-color: var(--color-surface-container-high);
+}
+
+.bn-editor [data-content-type=heading] {
+  --level: 2.4em;
+}
+
+.bn-editor [data-content-type=heading][data-level="2"] {
+  --level: 1.8em;
+}
+
+.bn-editor [data-content-type=heading][data-level="3"] {
+  --level: 1.3em;
 }

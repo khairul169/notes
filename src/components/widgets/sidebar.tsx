@@ -31,7 +31,7 @@ export default function Sidebar() {
     <>
       {open && (
         <div
-          className="fixed inset-0 z-[1002] cursor-pointer bg-black/10 md:hidden"
+          className="fixed inset-0 z-[19] cursor-pointer bg-black/10 md:hidden"
           role="button"
           onClick={() => sidebarStore.setState({ open: false })}
         />
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          "bg-surface-container-low fixed top-0 bottom-0 left-0 z-[1003] flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl shadow-md transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none md:shadow-none",
+          "bg-surface-container-low fixed top-0 bottom-0 left-0 z-20 flex w-[80%] -translate-x-full flex-col overflow-hidden rounded-r-2xl shadow-md transition-all md:static md:max-w-[250px] md:translate-0 md:rounded-none md:shadow-none",
           open && "flex -translate-x-0"
         )}
       >

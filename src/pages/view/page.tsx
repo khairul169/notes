@@ -4,43 +4,15 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
-import { useNoteQuery, useOnChange } from "./lib/hooks";
+import { useEditor, useNoteQuery, useOnChange } from "./lib/hooks";
 import Actions from "./components/actions";
-import BlockEditor, {
-  BlockDocument,
-  useBlockEditor,
-} from "@/components/ui/block-editor";
-import { getAttachment, storeAttachment } from "./lib/services";
-import { toast } from "sonner";
+import BlockEditor from "@/components/ui/block-editor";
 
 export default function ViewNotePage() {
   const { id } = useParams();
 
   const { data, loading, error, refetch } = useNoteQuery(id!);
-  const editor = useBlockEditor(
-    {
-      initialContent: data?.content as BlockDocument,
-      async uploadFile(file) {
-        if (file.size > 1024 * 1024 * 5) {
-          toast.error("Cannot store file!", {
-            description: "Max file size: 5 MB",
-          });
-          throw new Error("Upload Failed");
-        }
-
-        return storeAttachment(id!, file);
-      },
-      async resolveFileUrl(url) {
-        const attachment = await getAttachment(url);
-        if (attachment) {
-          return attachment;
-        }
-
-        return url;
-      },
-    },
-    [data?.content]
-  );
+  const editor = useEditor(data);
   const onChange = useOnChange(editor, data);
 
   if (loading) {
@@ -59,7 +31,7 @@ export default function ViewNotePage() {
     <>
       <Actions data={data} refetch={refetch} />
 
-      <div className="flex flex-1 flex-col overflow-y-auto p-4">
+      <div className="flex flex-1 flex-col overflow-y-auto md:p-4">
         <DeletedAlert data={data} refetch={refetch} />
 
         <BlockEditor
